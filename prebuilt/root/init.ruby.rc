@@ -61,10 +61,6 @@ on post-fs
     mkdir /data/qcks 0770 system system
 	exec /system/bin/logwrapper /system/bin/htc_ext4_fsck
 
-on early-init
-    device /dev/block/mmcblk0p16 0460 radio diag
-
-on init
     # double check the perms and set owner
     chown root root /devlog
     chmod 0700 /devlog
@@ -95,7 +91,6 @@ on init
 
     symlink /mnt/sdcard/ext_sd /sdcard2
 
-on boot
 # + SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
     mkdir /data/radio 0770 radio radio
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
