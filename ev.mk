@@ -18,7 +18,7 @@ PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=htc_ruby BUILD_ID=GRJ22 BUILD_FINGE
 PRODUCT_CODENAME := Iaceo
 PRODUCT_VERSION_DEVICE_SPECIFIC := p1
 
-PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank you for choosing Evervolv for your HTC Amaze 4g\nPlease visit us at \#evervolv on irc.freenode.net\nFollow @preludedrew for the latest Evervolv updates\nGet the latest rom at evervolv.com\n------------------------------------------------\n"
+PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank you for choosing Evervolv for your HTC Amaze 4g\n------------------------------------------------\n"
 
 #PRODUCT_PACKAGES += \
     Camera
@@ -26,10 +26,6 @@ PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank yo
 # Copy compatible prebuilt files
 PRODUCT_COPY_FILES +=  \
     vendor/ev/prebuilt/qhd/media/bootanimation.zip:system/media/bootanimation.zip
-
-# qHD overlay
-PRODUCT_PACKAGE_OVERLAYS += \
-    vendor/ev/overlay/qhd
 
 # USB
 ADDITIONAL_DEFAULT_PROPERTIES += \
