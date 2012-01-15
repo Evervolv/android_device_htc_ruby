@@ -1,7 +1,7 @@
-USE_CAMERA_STUB := true
-
 # inherit from the proprietary version
 -include vendor/htc/ruby/BoardConfigVendor.mk
+
+USE_CAMERA_STUB := true
 
 TARGET_NO_BOOTLOADER := true
 
@@ -62,9 +62,9 @@ BOARD_USES_QCOM_LIBS := true
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
 
-
-BOARD_USE_NEW_LIBRIL_HTC := true
-TARGET_PROVIDES_LIBRIL := vendor/htc/ruby/proprietary/libril.so
+#(temporary signal fix moved libril.so to full_ruby.mk)
+#BOARD_USE_NEW_LIBRIL_HTC := true
+#TARGET_PROVIDES_LIBRIL := vendor/htc/ruby/proprietary/libril.so
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1
 BOARD_KERNEL_BASE := 0x48000000
