@@ -1,3 +1,6 @@
+/dev/system_bus_freq    0660    system      system
+/dev/cpu_dma_latency    0660    system      system
+
 #for audio
 /dev/msm_acdb	          0660   system     audio
 /dev/audience_a1026       0660   system     audio
