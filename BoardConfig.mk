@@ -70,10 +70,13 @@ BOARD_KERNEL_CMDLINE := no_console_suspend=1
 BOARD_KERNEL_BASE := 0x48000000
 BOARD_PAGE_SIZE := 2048
 
-
-
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
+# We use a recoverykernel
+TARGET_PREBUILT_RECOVERY_KERNEL := device/htc/ruby/prebuilt/recovery/root/recoverykernel
+
+# For recovery-chargemode
+TARGET_RECOVERY_INITRC := device/htc/ruby/prebuilt/recovery/root/init.rc
 
 # cat /proc/emmc
 dev:        size     erasesize name
@@ -111,5 +114,5 @@ BOARD_SDEXT_DEVICE := /dev/block/mmcblk1p2
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_CUSTOM_GRAPHICS:= ../../../device/htc/ruby/graphics.c
-BOARD_USES_RECOVERY_CHARGEMODE := true
+#BOARD_CUSTOM_GRAPHICS:= ../../../device/htc/ruby/graphics.c
+#BOARD_USES_RECOVERY_CHARGEMODE := true
