@@ -72,6 +72,8 @@ BOARD_PAGE_SIZE := 2048
 
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
+# We use a recoverykernel
+TARGET_PREBUILT_RECOVERY_KERNEL := device/htc/ruby/prebuilt/recovery/root/recoverykernel
 
 # For recovery-chargemode
 TARGET_RECOVERY_INITRC := device/htc/ruby/prebuilt/recovery/root/init.rc
