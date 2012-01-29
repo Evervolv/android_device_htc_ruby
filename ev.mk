@@ -4,6 +4,9 @@ $(call inherit-product, device/htc/ruby/full_ruby.mk)
 # Inherit some common evervolv stuff.
 $(call inherit-product, vendor/ev/config/common_full_phone.mk)
 
+# Inherit some evervolv gsm stuff.
+$(call inherit-product, vendor/ev/config/gsm.mk)
+
 #
 # Setup device specific product configuration.
 #

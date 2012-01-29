@@ -81,7 +81,7 @@ ro.ril.hsxpa = 3
 ro.telephony.default_network=0
 
 wifi.interface=tiwlan0
-wifi.supplicant_scan_interval=100
+wifi.supplicant_scan_interval=45
 
 # The OpenGL ES API level that is natively supported by this device.
 # This is a 16.16 fixed point number
@@ -94,3 +94,5 @@ ro.ril.def.agps.mode=2
 
 #ICS Disable HW Acceleration
 ro.config.disable_hw_accel=true
+
+ro.telephony.ril.v3=signalstrength
