@@ -208,6 +208,13 @@ PRODUCT_COPY_FILES += \
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
+#NFC Support
+PRODUCT_PACKAGES += \
+    libnfc \
+    libnfc_jni \
+    Nfc \
+    Tag
+
 
 PRODUCT_LOCALES += en
 
