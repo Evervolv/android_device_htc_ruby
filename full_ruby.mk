@@ -34,6 +34,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/root/init.ruby.rc:root/init.ruby.rc \
+    device/htc/ruby/prebuilt/root/ks:root/system/bin/ks \
+    device/htc/ruby/prebuilt/root/qcks:root/system/bin/qcks \
     device/htc/ruby/prebuilt/root/init.ruby.usb.rc:root/init.ruby.usb.rc \
     device/htc/ruby/prebuilt/root/ueventd.ruby.rc:root/ueventd.ruby.rc
 
@@ -134,20 +136,17 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += \
     librs_jni \
+    copybit.msm8660 \
+    gralloc.msm8660 \
+    hwcomposer.msm8660 \
+    libgenlock \
+    libmemalloc \
+    liboverlay \
+    libQcomUI \
+    libOmxCore \
     libOmxVenc \
     libOmxVdec \
-    gralloc.msm8660 \
     com.android.future.usb.accessory
-#    overlay.default \
-#    gps.ruby \
-#    copybit.msm8x60 \
-#    overlay.default \
-#    libOmxCore \
-#    libaudio \
-
-##Disable HWAccel for now
-ADDITIONAL_BUILD_PROPERTIES += \
-    ro.config.disable_hw_accel=true
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
@@ -215,6 +214,9 @@ PRODUCT_PACKAGES += \
     Nfc \
     Tag
 
+#Camera
+PRODUCT_PACKAGES += \
+    Camera
 
 PRODUCT_LOCALES += en
 

@@ -39,7 +39,7 @@ WIFI_DRIVER_MODULE_NAME := "1283"
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := true
+BOARD_HAVE_BLUETOOTH_BCM := false
 
 # Gps
 #BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
@@ -58,7 +58,6 @@ COMMON_GLOBAL_CFLAGS += \
 
 BOARD_USES_QCOM_HARDWARE := true
 BOARD_USES_QCOM_LIBS := true
-
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
 
@@ -66,7 +65,7 @@ BOARD_USE_LEGACY_TOUCHSCREEN := true
 #BOARD_USE_NEW_LIBRIL_HTC := true
 #TARGET_PROVIDES_LIBRIL := vendor/htc/ruby/proprietary/libril.so
 
-BOARD_KERNEL_CMDLINE := no_console_suspend=1
+BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
 BOARD_KERNEL_BASE := 0x48000000
 BOARD_PAGE_SIZE := 2048
 
@@ -112,5 +111,3 @@ BOARD_SDEXT_DEVICE := /dev/block/mmcblk1p2
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
-#BOARD_CUSTOM_GRAPHICS:= ../../../device/htc/ruby/graphics.c
-#BOARD_USES_RECOVERY_CHARGEMODE := true

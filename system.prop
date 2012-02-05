@@ -1,4 +1,15 @@
+#
 # system.prop for ruby
+#
+
+#C2D
+debug.composition.type = c2d
+debug.qctwa.statusbar=1
+debug.qctwa.preservebuf=1
+
+# cm qcom build lub
+com.qc.hardware=true
+com.qc.hdmi_out=false
 
 #rild.libpath=/system/lib/libril-qc-qmi-1.so
 rild.libargs=-d /dev/smd0
