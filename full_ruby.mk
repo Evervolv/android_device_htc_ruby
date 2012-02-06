@@ -32,6 +32,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.lockprof.threshold=500 \
     dalvik.vm.dexopt-flags=m=y
 
+# Ramdisk Files
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/root/init.ruby.rc:root/init.ruby.rc \
     device/htc/ruby/prebuilt/root/ks:root/system/bin/ks \
@@ -122,6 +123,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 DEVICE_PACKAGE_OVERLAYS += device/htc/ruby/overlay
 
+# These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
@@ -132,6 +134,8 @@ PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/base/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
     frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
+    frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
 PRODUCT_PACKAGES += \
@@ -214,9 +218,10 @@ PRODUCT_PACKAGES += \
     Nfc \
     Tag
 
-#Camera
+#Optional Add on packages
 PRODUCT_PACKAGES += \
-    Camera
+    Camera \
+    Stk
 
 PRODUCT_LOCALES += en
 
@@ -225,6 +230,13 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/etc/apns-conf.xml:system/etc/apns-conf.xml \
     device/htc/ruby/prebuilt/system/etc/spn-conf.xml:system/etc/spn-conf.xml \
     device/htc/ruby/prebuilt/system/etc/voicemail-conf.xml:system/etc/voicemail-conf.xml
+
+# NFC EXTRAS add-on API
+PRODUCT_PACKAGES += \
+	com.android.nfc_extras
+
+PRODUCT_PACKAGES += \
+	nfc.ruby
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
