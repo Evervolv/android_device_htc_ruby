@@ -45,6 +45,9 @@ BOARD_HAVE_BLUETOOTH_BCM := false
 #BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
 #BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 
+# Enable NFC
+BOARD_HAVE_NFC := true
+
 # Define egl.cfg location
 BOARD_EGL_CFG := device/htc/ruby/prebuilt/system/lib/egl/egl.cfg
 BOARD_USES_OVERLAY := true
@@ -76,24 +79,24 @@ TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
 TARGET_RECOVERY_INITRC := device/htc/ruby/prebuilt/recovery/root/init.rc
 
 # cat /proc/emmc
-dev:        size     erasesize name
-mmcblk0p24: 00fff600 00000200 "misc"
-mmcblk0p23: 00fffc00 00000200 "recovery"
-mmcblk0p22: 01000000 00000200 "boot"
-mmcblk0p29: 5ffffc00 00000200 "system"
-mmcblk0p30: 13fffe00 00000200 "cache"
-mmcblk0p31: 9ffffe00 00000200 "userdata"
-mmcblk0p32: 01fba800 00000200 "devlog"
-mmcblk0p34: 00040000 00000200 "pdata"
-mmcblk0p17: 02800000 00000200 "radio"
-mmcblk0p21: 02000000 00000200 "adsp"
-mmcblk0p19: 007ffc00 00000200 "radio_config"
-mmcblk0p25: 00400000 00000200 "modem_st1"
-mmcblk0p26: 00400000 00000200 "modem_st2"
-mmcblk0p18: 02800000 00000200 "mdm9k"
-mmcblk0p20: 007ffa00 00000200 "mdm9k_config"
-mmcblk0p27: 00400000 00000200 "mdm_efs1"
-mmcblk0p28: 00400000 00000200 "mdm_efs2"
+#dev:        size     erasesize name
+#mmcblk0p24: 00fff600 00000200 "misc"
+#mmcblk0p23: 00fffc00 00000200 "recovery"
+#mmcblk0p22: 01000000 00000200 "boot"
+#mmcblk0p29: 5ffffc00 00000200 "system"
+#mmcblk0p30: 13fffe00 00000200 "cache"
+#mmcblk0p31: 9ffffe00 00000200 "userdata"
+#mmcblk0p32: 01fba800 00000200 "devlog"
+#mmcblk0p34: 00040000 00000200 "pdata"
+#mmcblk0p17: 02800000 00000200 "radio"
+#mmcblk0p21: 02000000 00000200 "adsp"
+#mmcblk0p19: 007ffc00 00000200 "radio_config"
+#mmcblk0p25: 00400000 00000200 "modem_st1"
+#mmcblk0p26: 00400000 00000200 "modem_st2"
+#mmcblk0p18: 02800000 00000200 "mdm9k"
+#mmcblk0p20: 007ffa00 00000200 "mdm9k_config"
+#mmcblk0p27: 00400000 00000200 "mdm_efs1"
+#mmcblk0p28: 00400000 00000200 "mdm_efs2"
 
 
 TARGET_USERIMAGES_USE_EXT4 := true
