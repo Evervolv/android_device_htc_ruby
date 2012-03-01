@@ -1,32 +1,40 @@
-on emmc
+import init.ruby.usb.rc
+
+on init
+    export EXTERNAL_STORAGE /mnt/sdcard
+    mkdir /mnt/sdcard 0000 system system
+    symlink /mnt/sdcard /sdcard
+#    symlink /mnt/sdcard/ext_sd /sdcard2
 
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /devlog 0700 root root
-    devwait emmc@system
-	mount ext4 emmc@system /system ro
-        #mount ext4 emmc@system /system remount noauto_da_alloc
-        #mount ext4 emmc@system /system remount ro
-    devwait emmc@userdata
-	mount ext4 emmc@userdata /data noatime nosuid nodev nodelalloc
-        #mount ext4 emmc@userdata /data remount noauto_da_alloc
-        #mount ext4 emmc@userdata /data remount noatime nosuid nodev
-    devwait emmc@cache
-	mount ext4 emmc@cache /cache noatime nosuid nodev nodelalloc
-        #mount ext4 emmc@cache /cache remount noauto_da_alloc
-        #mount ext4 emmc@cache /cache remount noatime nosuid nodev
-    devwait emmc@devlog
-	mount ext4 emmc@devlog /devlog noatime nosuid nodev nodelalloc
-        #mount ext4 emmc@devlog /devlog remount noauto_da_alloc
-        #mount ext4 emmc@devlog /devlog remount noatime nosuid nodev
 
-    # 8x60: mount radio partition and create links for modem/q6 firmwares
-    mkdir /vendor               0771 system system
-    mkdir /vendor/firmware      0771 system system
+    # radio partition
+    rm /vendor
+    mkdir /vendor 0771 system system
+    mkdir /vendor/firmware 0771 system system
     mkdir /vendor/firmware/misc 0771 system system
-    devwait emmc@radio
-    mount vfat emmc@radio /vendor/firmware/misc ro shortname=lower
+    mkdir /vendor/firmware/misc_mdm 0771 system system
+
+on early-fs
+#    mount vfat emmc@radio /vendor/firmware/misc ro shortname=lower
+    mount vfat /dev/block/mmcblk0p17 /vendor/firmware/misc ro shortname=lower
+#    mount vfat emmc@mdm9k /vendor/firmware/misc_mdm ro shortname=lower
+    mount vfat /dev/block/mmcblk0p18 /vendor/firmware/misc_mdm ro shortname=lower
+#	mount ext4 emmc@system /system ro
+    mount ext4 /dev/block/mmcblk0p29 /system wait ro data=ordered noauto_da_alloc
+#	mount ext4 emmc@cache /cache noatime nosuid nodev nodelalloc
+    mount ext4 /dev/block/mmcblk0p30 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
+#	mount ext4 emmc@userdata /data noatime nosuid nodev nodelalloc
+    mount ext4 /dev/block/mmcblk0p31 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
+#	mount ext4 emmc@devlog /devlog noatime nosuid nodev nodelalloc
+    mount ext4 /dev/block/mmcblk0p32 /devlog wait noatime nosuid nodev data=ordered noauto_da_alloc
+
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+on fs
     symlink /vendor/firmware/misc/q6.b07 /vendor/firmware/q6.b07
     symlink /vendor/firmware/misc/q6.b06 /vendor/firmware/q6.b06
     symlink /vendor/firmware/misc/q6.b05 /vendor/firmware/q6.b05
@@ -48,9 +56,6 @@ on emmc
     symlink /vendor/firmware/misc/modem.b01 /vendor/firmware/modem.b01
     symlink /vendor/firmware/misc/modem.b00 /vendor/firmware/modem.b00
     symlink /vendor/firmware/misc/modem.mdt /vendor/firmware/modem.mdt
-    mkdir /vendor/firmware/misc_mdm 0771 system system
-    devwait emmc@mdm9k
-    mount vfat emmc@mdm9k /vendor/firmware/misc_mdm ro shortname=lower
     symlink /vendor/firmware/misc_mdm/image/amss.mbn /vendor/firmware/amss.mbn
     symlink /vendor/firmware/misc_mdm/image/dsp1.mbn /vendor/firmware/dsp1.mbn
     symlink /vendor/firmware/misc_mdm/image/dsp2.mbn /vendor/firmware/dsp2.mbn
@@ -62,63 +67,95 @@ on emmc
     symlink /vendor/firmware/misc_mdm/image/htcssmem.mbn /vendor/firmware/htcssmem.mbn
 
 on post-fs
-    wait /dev/ttyHSL1
+#    wait /dev/ttyHSL1
     mkdir /data/qcks 0770 system system
-	exec /system/bin/logwrapper /system/bin/htc_ext4_fsck
+#    exec /system/bin/logwrapper /system/bin/htc_ext4_fsck
 
-on early-init
-    device /dev/block/mmcblk0p16 0460 radio diag
-
-on init
+on boot
     # double check the perms and set owner
     chown root root /devlog
     chmod 0700 /devlog
-
-    # for Invense MPU3050
-    chmod 0664 /dev/mpu
-    chmod 0664 /dev/mpuirq
-    chmod 0664 /dev/timerirq
-    chown system system /dev/mpu
-    chown system system /dev/mpuirq
-    chown system system /dev/timerirq
 
     # [3LM] Secure container used for sharing libraries for encrypted apps
     chmod 0771 /data/secure
     mkdir /data/secure/data 0771 system system
     mount tmpfs tmpfs /data/secure/data mode=0771,uid=1000,gid=1000
 
-# set pana gyro permissions
-    chmod 0666 /dev/ewtzmu2daemon
-    chmod 0666 /dev/ewtzmu2hal
-    chmod 0666 /dev/ewtzmu2
-    chown system system /dev/ewtzmu2hal
-    chown system system /dev/ewtzmu2daemon
-    chown system system /dev/ewtzmu2
-    
-
-
-
-    symlink /mnt/sdcard/ext_sd /sdcard2
-
-on boot
 # + SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
     mkdir /data/radio 0770 radio radio
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
     chown radio system /sys/module/rpcrouter_sdio_xprt/parameters/debug_mask
 # - SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
-    mkdir /data/d 0777 system system
-    mount debugfs /data/d /data/d
 
+    mkdir /app-cache 0700 root system
+    mount tmpfs tmpfs /app-cache size=8m,mode=0755,gid=1000
+
+    write /proc/sys/kernel/sched_latency_ns 5000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 100000
+    write /proc/sys/kernel/sched_min_granularity_ns 100000
+
+    # create htcfs
+    mkdir /data/htcfs 0777 root root
+
+    copy /system/etc/adreno_config.txt /data/local/tmp/adreno_config.txt
+
+    # DRMv1 rights storage
+    symlink /data/local /data/drm
+    mkdir /data/local/rights 0774 shell shell
+    chown shell shell /data/drm
+
+    # HTC add for customization wizard folder
+    mkdir /data/data/cw 0777 root root
+    mkdir /data/data/cwtemp 0777 root root
+
+    chown radio system /sys/module/gpio_event/parameters/phone_call_status
+    chmod 0444 /sys/android_camera/fps_mode
+    chmod 0660 /sys/android_camera2/htcwc
+    chown media system /sys/android_camera2/htcwc
+    chown media system /sys/android_camera/cam3Dmode
+    chown radio system /sys/camera_led_status/led_ril_status
+    chown system system /sys/camera_led_status/led_wimax_status
+    chown system system /sys/camera_led_status/led_hotspot_status
+    chown media system /sys/android_camera/cam_mode
+    chown radio system /sys/class/cap_sense/sar/sleep
+
+    # HTC UI - BEGIN
+    chown system system /sys/class/leds/blue/blink
+    chown system system /sys/class/leds/blue/off_timer
+    chown system system /sys/class/leds/button-backlight/brightness
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/green/off_timer
+    chown system system /sys/class/leds/amber/blink
+    chown system system /sys/class/leds/amber/off_timer
+    chown system system /sys/class/leds/amber/brightness
+    chown system system /sys/class/leds/flashlight/brightness
+    chown system system /sys/camera_led_status/led_hotspot_status
+    chown system system /sys/devices/virtual/htc_accessory/fm/flag
+    chown system system /sys/devices/virtual/htc_accessory/tty/flag
+    # HTC UI - END
+
+    # bluetooth update FM status to keypad
+    chown bluetooth bluetooth /sys/devices/platform/gpio-event.0/fm_radio
+    chown system system /sys/class/switch/dock/dmb_wakeup
+    chown system system /sys/class/switch/bt_dock/bt_pin
     # bluetooth power up/down interface
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
+    #set ntrig touch permissions
+    chown system system dev/ntrig_touch
+    chmod 0640 dev/ntrig_touch
+
+    #set atmel touch permissions
+    chown system system /sys/android_touch/unlock
+
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0771 wifi wifi
     mkdir /data/misc/wifi/sockets 0771 wifi wifi
     mkdir /data/misc/dhcp 0777 wifi wifi
-# btips DDB location
+
+    # btips DDB location
     mkdir /data/data/btips 0777 bluetooth bluetooth
     mkdir /data/data/btips/TI 0777 bluetooth bluetooth
     mkdir /data/data/btips/TI/opp 0777 bluetooth bluetooth
@@ -127,92 +164,90 @@ on boot
     chown dhcp dhcp /data/misc/dhcp
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-	setprop wifi.interface tiwlan0
+    setprop wifi.interface tiwlan0
     setprop softap.interface tiap0
-    setprop hostapd.status = unloaded	
+    setprop hostapd.status unloaded
 
-	# for modem link
-	chown system system /sys/module/serial/parameters/modem_enabled
-	chown system system /dev/ttyHSUSB0
-	chown system system /dev/ttySA0
-	chown system system /dev/smd9
+    # for modem link
+    chown system system /sys/module/serial/parameters/modem_enabled
+    chown system system /dev/ttyHSUSB0
+    chown system system /dev/ttySA0
+    chown system system /dev/smd9
 
-	# for Flip to speaker
-	chown radio radio /sys/class/htc_accelerometer/accelerometer/PhoneOnOffFlag
-	chown radio radio /sys/class/htc_ecompass/ecompass/PhoneOnOffFlag
+    # for Flip to speaker
+    chown radio radio /sys/class/htc_accelerometer/accelerometer/PhoneOnOffFlag
+    chown radio radio /sys/class/htc_ecompass/ecompass/PhoneOnOffFlag
 
-	# for Optical sensors
-	chown system system /sys/class/optical_sensors/lightsensor/ls_adc
-	chown system system /sys/class/optical_sensors/lightsensor/ls_auto
-	chown system system /sys/class/optical_sensors/lightsensor/ls_kadc
-	chown system radio /sys/class/optical_sensors/proximity/ps_adc
-	chown system system /sys/class/optical_sensors/proximity/ps_kadc
-	chown system system /sys/class/optical_sensors/proximity/ps_led
-	chown system system /sys/class/optical_sensors/proximity/ps_test_mode
+    # for Optical sensors
+    chown system system /sys/class/optical_sensors/lightsensor/ls_adc
+    chown system system /sys/class/optical_sensors/lightsensor/ls_auto
+    chown system system /sys/class/optical_sensors/lightsensor/ls_kadc
+    chown system radio /sys/class/optical_sensors/proximity/ps_adc
+    chown system system /sys/class/optical_sensors/proximity/ps_kadc
+    chown system system /sys/class/optical_sensors/proximity/ps_led
+    chown system system /sys/class/optical_sensors/proximity/ps_test_mode
 
-	# permissions for NFC
-	setprop ro.nfc.port "I2C"
-	chmod 0600 /dev/pn544
-	chown nfc nfc /dev/pn544
+    # permissions for NFC
+    setprop ro.nfc.port "I2C"
 
-        # for simlock
-        chown radio radio /dev/simlock
-        chmod 0660 /dev/simlock
+    # for charging function
+    chown radio radio /sys/module/htc_battery_8x60/parameters/phone_call
+    chmod 0660 /sys/module/htc_battery_8x60/parameters/phone_call
 
-	# for charging function
-	chown radio radio /sys/module/htc_battery_8x60/parameters/phone_call
-	chmod 0660 /sys/module/htc_battery_8x60/parameters/phone_call
-	
-	# for LogMeIn_Rescue
-	chown nobody.shell ./RescueStarter
-	chmod 755 ./RescueStarter
-	chown nobody.shell ./RescueServer
-	chmod 755 ./RescueServer
+#	# for LogMeIn_Rescue
+#	chown nobody.shell ./RescueStarter
+#	chmod 755 ./RescueStarter
+#	chown nobody.shell ./RescueServer
+#	chmod 755 ./RescueServer
 
-	# Discretix DRM
+    # Discretix DRM
     mkdir /data/DxDrm
     mkdir /data/DxDrm/fuse
     mkdir /data/DxDrm/Credentials
     mkdir /data/DxDrm/Credentials/PlayReady
-	chmod 555 /data/DxDrm
+    chmod 555 /data/DxDrm
     copy /etc/DxPrdyProvisionObf.pkg /data/DxDrm/Credentials/PlayReady/DxPrdyProvisionObf.pkg
     copy /etc/DxDrmConfig_Server.txt /data/DxDrm/DxDrmConfig_Server.txt
 
-# btips DDB location
-	mkdir /data/btips 0777 bluetooth bluetooth
-	mkdir /data/btips/TI 0777 bluetooth bluetooth
-	mkdir /data/btips/TI/opp 0777 bluetooth bluetooth
-	mkdir /mnt/tmp 01777 bluetooth bluetooth
+    # btips DDB location
+    mkdir /data/btips 0777 bluetooth bluetooth
+    mkdir /data/btips/TI 0777 bluetooth bluetooth
+    mkdir /data/btips/TI/opp 0777 bluetooth bluetooth
+#    mkdir /mnt/tmp 0777 bluetooth bluetooth # this will fail
 
     # Load kineto_gan.ko while booting
-    insmod /system/lib/modules/kineto_gan.ko
+# We dont have this yet
+#    insmod /system/lib/modules/kineto_gan.ko
 
-# + SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
+# SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
     setprop net.tcp.buffersize.hsdpa   4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.umts    4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.edge    4096,174760,1572864,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4096,174760,1572864,4096,8760,11680
-# - SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
+# SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
 
 # Force loading of modem and Q6 images
 service load-modem /system/bin/load-modem.sh
     oneshot
 
-service kickstart /system/bin/qcks l
-    oneshot
+# this is causing reboots
+#service kickstart /system/bin/qcks l
+#    oneshot
 
 service uim /system/xbin/uim
-	user root
-	group media bluetooth
-	oneshot
+    user root
+    group media bluetooth
+    oneshot
 
 # compass/accelerometer daemon
 service akmd /system/bin/akmd
+    class main
     user compass
     group compass misc input
-    
+
 # gyro daemon
 service ewtzmud /system/bin/ewtzmud
+    class main
     user system
     group system misc input
 
@@ -222,10 +257,10 @@ service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
     oneshot
     keycodes 114 115
 
-#service hciattach /system/bin/brcm_patchram_plus --enable_hci --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS0
-#    user bluetooth
-#    group bluetooth net_bt_admin
-#    disabled
+service hciattach /system/bin/brcm_patchram_plus --enable_hci --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS0
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
 
 # Make sure we startup btld before hcid
 # Set target address to emulator host loopback IF
@@ -236,6 +271,7 @@ service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
 #    group bluetooth net_bt_admin
 #    disabled
 #    oneshot
+
 #btips - 2.24
 service btips /system/bin/btipsd --android_log BTIPSD
     socket bluetooth stream 660 bluetooth bluetooth
@@ -283,37 +319,37 @@ service dhcpcd_tiwlan0 /system/bin/dhcpcd -BKL -d tiwlan0
 # wifi--
 
 # [3LM] device manager 3LM service
-service tund /system/bin/tund
-    socket tund stream 0660 vpn system
-    user vpn
-    group vpn net_admin net_raw
-    ioprio be 2
+#service tund /system/bin/tund
+#    socket tund stream 0660 vpn system
+#    user vpn
+#    group vpn net_admin net_raw
+#    ioprio be 2
 
-# for USB internet sharing
-service udhcpd /system/bin/udhcpd
-	disabled
-	oneshot
+## for USB internet sharing
+#service udhcpd /system/bin/udhcpd
+#	disabled
+#	oneshot
 
-service netsharing_on /system/bin/netsharing net on
-	disabled
-	oneshot
+#service netsharing_on /system/bin/netsharing net on
+#	disabled
+#	oneshot
 
-service netsharing_off /system/bin/netsharing net off
-	disabled
-	oneshot
+#service netsharing_off /system/bin/netsharing net off
+#	disabled
+#	oneshot
 
-service netsharing_pass /system/bin/netsharing net_pass on
-	disabled
-	oneshot
+#service netsharing_pass /system/bin/netsharing net_pass on
+#	disabled
+#	oneshot
 
-service srv_ser2net /system/bin/ser2net -n
-    disabled
+#service srv_ser2net /system/bin/ser2net -n
+#    disabled
 
-on property:service.ser2net.enable=1
-    start srv_ser2net
+#on property:service.ser2net.enable=1
+#    start srv_ser2net
 
-on property:service.ser2net.enable=0
-    stop srv_ser2net
+#on property:service.ser2net.enable=0
+#    stop srv_ser2net
 
 service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmcblk0p26 NULL NULL /dev/block/mmcblk0p27 /dev/block/mmcblk0p28 /dev/block/mmcblk0p20
     user root
@@ -322,10 +358,10 @@ service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmc
 on property:ro.emmc=1
     start rmt_storage
 
-service dmagent /system/bin/dmagent -N
-    socket dmagent stream 660 root radio
-    user root
-    group radio cache inet misc
+#service dmagent /system/bin/dmagent -N
+#    socket dmagent stream 660 root radio
+#    user root
+#    group radio cache inet misc
 
 # for modem link
 service modem /system/xbin/wireless_modem
@@ -341,48 +377,49 @@ on property:service.modem.enable=1
 on property:service.modem.enable=0
 	stop modem
 
-service zchgd_offmode /system/bin/zchgd -pseudooffmode
-    user root
-    disabled
+#service zchgd_offmode /system/bin/zchgd -pseudooffmode
+#    user root
+#    disabled
 
-service zchgd_onmode /system/bin/zchgd -onmode
-    user root
-    oneshot
+#service zchgd_onmode /system/bin/zchgd -onmode
+#    user root
+#    oneshot
 
 #+HTC_RIL: from QCT Fusion
 service qmuxd /system/bin/qmuxd
 
-service netmgrd /system/bin/netmgrd
+#service netmgrd /system/bin/netmgrd
 
-on property:ro.use_data_netmgrd=false
-    # netmgr not supported on specific target
-    stop netmgrd
+#on property:ro.use_data_netmgrd=false
+#    # netmgr not supported on specific target
+#    stop netmgrd
 
-service ril-daemon /system/bin/rild
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio qcom_oncrpc diag system
+#service ril-daemon /system/bin/rild
+#    socket rild stream 660 root radio
+#    socket rild-debug stream 660 radio system
+#    user root
+#    group radio cache inet misc audio qcom_oncrpc diag system
 
 #-HTC_RIL: from QCT Fusion
 
-# for vnc
-service androidvncserver /system/bin/androidvncserver -a
-    disabled
-    oneshot
+## for vnc
+#service androidvncserver /system/bin/androidvncserver -a
+#    disabled
+#    oneshot
 
-service usbnet /system/bin/usbnet on
-    disabled
-    oneshot
+#service usbnet /system/bin/usbnet on
+#    disabled
+#    oneshot
 
-service hdmid /system/bin/hdmid
-    socket displayd stream 0660 root system graphics
-    disable
-    start hdmid
+#service hdmid /system/bin/hdmid
+#    socket displayd stream 0660 root system graphics
+#    disabled
+#    start hdmid
 
-service mpld /system/bin/mpld
-    user system
-    oneshot
+#service mpld /system/bin/mpld
+#    user system
+#    oneshot
+
 service htcbatt /system/bin/htcbatt
     user root
 
@@ -419,16 +456,19 @@ service htc_ebdlogd_rel /system/bin/htc_ebdlogd -s -k
     ioprio idle 0
 
 # Discretix DRM
-service dx_drm_server /system/bin/DxDrmServerIpc -f -o allow_other /data/DxDrm/fuse
+#service dx_drm_server /system/bin/DxDrmServerIpc -f -o allow_other /data/DxDrm/fuse
 
-on property:ro.build.tags=test-keys
-    start htc_ebdlogd
+#on property:ro.build.tags=test-keys
+#    start htc_ebdlogd
 
-on property:ro.build.tags=release-keys
-    start htc_ebdlogd_rel
+#on property:ro.build.tags=release-keys
+#    start htc_ebdlogd_rel
 
 #Service initiation command for RescueStart for TMOUS
-service RescueStarter /system/bin/RescueStarter
-	user nobody
-	group input graphics
+#service RescueStarter /system/bin/RescueStarter
+#	user nobody
+#	group input graphics
 
+#service post-boot /system/bin/sh /system/etc/init.post_boot.sh
+#    user root
+#    oneshot
