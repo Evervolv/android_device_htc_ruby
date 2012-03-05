@@ -51,9 +51,11 @@ version 4 - added sms to mms text threshold.
     <int name="maxMessageCountPerThread">5000</int>
 
     <!-- User-Agent parameter used in MMS http request -->
+<!-- TODO: FIXME: -->
     <string name="userAgent">Sprint APX515CKT Build/GRJ22</string>
 
     <!-- UAProf URL -->
+<!-- TODO: FIXME: -->
     <string name="uaProfUrl">http://device.sprintpcs.com/HTC/APX515CKT/2086512.rdf</string>
 
     <!-- Maximum number of recipients allowed per message. Use a value of -1

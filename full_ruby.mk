@@ -110,6 +110,12 @@ PRODUCT_PACKAGES += \
     com.android.nfc_extras \
     nfc.ruby
 
+# not working, complain of missing libmpl (which has no build target)
+# use prebuilts for now
+#PRODUCT_PACKAGES += \
+#    libmlplatform \
+#    libmllite
+
 # Ramdisk Files
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/root/init.ruby.rc:root/init.ruby.rc \
@@ -121,8 +127,8 @@ PRODUCT_COPY_FILES += \
 # Using prebuilt audio libs right now
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/hw/audio.primary.default.so:system/lib/hw/audio.primary.msm8660.so \
-    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.msm8660.so \
-    device/htc/ruby/prebuilt/system/lib/hw/audio.a2dp.default.so:system/lib/hw/audio.a2dp.default.so
+    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.msm8660.so
+#    device/htc/ruby/prebuilt/system/lib/hw/audio.a2dp.default.so:system/lib/hw/audio.a2dp.default.so
 
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/hw/gps.ruby.so:/system/lib/hw/gps.ruby.so \

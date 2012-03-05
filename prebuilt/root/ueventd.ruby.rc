@@ -37,7 +37,7 @@
 /dev/akm8973_daemon     0640    compass system
 /dev/akm8975_aot        0640    compass system
 /dev/akm8975_daemon     0640    compass system
-/dev/bma150
+/dev/bma150             0640    compass system
 
 # gpu driver for adreno200 is globally accessible
 /dev/kgsl-2d0           0666    root    root
