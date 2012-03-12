@@ -96,6 +96,7 @@ PRODUCT_PACKAGES += \
     libOmxVidEnc \
     libOmxVdec \
     libstagefrighthw \
+    libdivxdrmdecrypt \
     com.android.future.usb.accessory
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -109,7 +110,6 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras \
     nfc.ruby
-
 # not working, complain of missing libmpl (which has no build target)
 # use prebuilts for now
 #PRODUCT_PACKAGES += \

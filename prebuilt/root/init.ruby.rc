@@ -1,6 +1,7 @@
 import init.ruby.usb.rc
 
 on init
+
     # external sdcard
     export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt/sdcard 0000 system system
@@ -9,35 +10,22 @@ on init
     export SECONDARY_STORAGE /mnt/emmc
     mkdir /mnt/emmc 0000 system system
     symlink /mnt/emmc /emmc
-    # fs
+
+on early-fs
+
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /devlog 0700 root root
-    # radio partition
+
     rm /vendor
     mkdir /vendor 0771 system system
     mkdir /vendor/firmware 0771 system system
     mkdir /vendor/firmware/misc 0771 system system
     mkdir /vendor/firmware/misc_mdm 0771 system system
 
-on early-fs
-#    mount vfat emmc@radio /vendor/firmware/misc ro shortname=lower
-    mount vfat /dev/block/mmcblk0p17 /vendor/firmware/misc ro shortname=lower
-#    mount vfat emmc@mdm9k /vendor/firmware/misc_mdm ro shortname=lower
-    mount vfat /dev/block/mmcblk0p18 /vendor/firmware/misc_mdm ro shortname=lower
-#	mount ext4 emmc@system /system ro
-    mount ext4 /dev/block/mmcblk0p29 /system wait ro data=ordered noauto_da_alloc
-#	mount ext4 emmc@cache /cache noatime nosuid nodev nodelalloc
-    mount ext4 /dev/block/mmcblk0p30 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
-#	mount ext4 emmc@userdata /data noatime nosuid nodev nodelalloc
-    mount ext4 /dev/block/mmcblk0p31 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
-#	mount ext4 emmc@devlog /devlog noatime nosuid nodev nodelalloc
-    mount ext4 /dev/block/mmcblk0p32 /devlog wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount vfat /dev/block/mmcblk0p17 /vendor/firmware/misc wait ro shortname=lower
 
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-on fs
     symlink /vendor/firmware/misc/q6.b07 /vendor/firmware/q6.b07
     symlink /vendor/firmware/misc/q6.b06 /vendor/firmware/q6.b06
     symlink /vendor/firmware/misc/q6.b05 /vendor/firmware/q6.b05
@@ -59,6 +47,9 @@ on fs
     symlink /vendor/firmware/misc/modem.b01 /vendor/firmware/modem.b01
     symlink /vendor/firmware/misc/modem.b00 /vendor/firmware/modem.b00
     symlink /vendor/firmware/misc/modem.mdt /vendor/firmware/modem.mdt
+
+    mount vfat /dev/block/mmcblk0p18 /vendor/firmware/misc_mdm wait ro shortname=lower
+
     symlink /vendor/firmware/misc_mdm/image/amss.mbn /vendor/firmware/amss.mbn
     symlink /vendor/firmware/misc_mdm/image/dsp1.mbn /vendor/firmware/dsp1.mbn
     symlink /vendor/firmware/misc_mdm/image/dsp2.mbn /vendor/firmware/dsp2.mbn
@@ -69,7 +60,22 @@ on fs
     symlink /vendor/firmware/misc_mdm/image/amss.mbn /vendor/firmware/amss.mbn
     symlink /vendor/firmware/misc_mdm/image/htcssmem.mbn /vendor/firmware/htcssmem.mbn
 
-on post-fs
+    mount ext4 /dev/block/mmcblk0p29 /system wait ro data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p30 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p31 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p32 /devlog wait noatime nosuid nodev data=ordered noauto_da_alloc
+
+#   mount vfat emmc@radio /vendor/firmware/misc ro shortname=lower
+#   mount vfat emmc@mdm9k /vendor/firmware/misc_mdm ro shortname=lower
+#	mount ext4 emmc@system /system ro
+#	mount ext4 emmc@cache /cache noatime nosuid nodev nodelalloc
+#	mount ext4 emmc@userdata /data noatime nosuid nodev nodelalloc
+#	mount ext4 emmc@devlog /devlog noatime nosuid nodev nodelalloc
+
+    # double check the perms and set owner
+    chown root root /devlog
+    chmod 0700 /devlog
+
 #    wait /dev/ttyHSL1
     mkdir /data/qcks 0770 system system
 #    exec /system/bin/logwrapper /system/bin/htc_ext4_fsck
@@ -84,33 +90,27 @@ on post-fs
     mkdir /data/local/rights 0774 shell shell
     chown shell shell /data/drm
 
-    # most definitely not needed but not hurting anything
-    # HTC add for customization wizard folder
-    mkdir /data/data/cw 0777 root root
-    mkdir /data/data/cwtemp 0777 root root
-
     # HTC add double check the perms of /data/data for already existed case
     chown system system /data/data
     chmod 0771 /data/data
-
-on boot
-    # double check the perms and set owner
-    chown root root /devlog
-    chmod 0700 /devlog
 
     # [3LM] Secure container used for sharing libraries for encrypted apps
     chmod 0771 /data/secure
     mkdir /data/secure/data 0771 system system
     mount tmpfs tmpfs /data/secure/data mode=0771,uid=1000,gid=1000
 
+    mkdir /app-cache 0700 root system
+    mount tmpfs tmpfs /app-cache size=8m,mode=0755,gid=1000
+
+on boot
+
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
 # + SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
     mkdir /data/radio 0770 radio radio
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
     chown radio system /sys/module/rpcrouter_sdio_xprt/parameters/debug_mask
 # - SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
-
-    mkdir /app-cache 0700 root system
-    mount tmpfs tmpfs /app-cache size=8m,mode=0755,gid=1000
 
     write /proc/sys/kernel/sched_latency_ns 5000000
     write /proc/sys/kernel/sched_wakeup_granularity_ns 100000
