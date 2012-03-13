@@ -1,17 +1,15 @@
 #
 # system.prop for ruby
 #
-#rild.libpath=/system/lib/libril-qc-qmi-1.so
-rild.libargs=-d /dev/smd0
+rild.libpath=/system/lib/libril-qc-qmi-1.so
+rild.libargs=-d/dev/smd0
 #
 # Modify MMS APN retry timer from 5s to 2s.
 #
-ro.gsm.2nd_data_retry_config=max_retries=3, 2000, 2000, 2000
+ro.gsm.2nd_data_retry_config=max_retries=3,2000,2000,2000
 #
 #+HTC_RIL: from QCT Fusion
 #
-rild.libpath=/system/lib/libril-qc-qmi-1.so
-rild.libargs=-d /dev/smd0
 persist.rild.nitz_plmn=
 persist.rild.nitz_long_ons_0=
 persist.rild.nitz_long_ons_1=

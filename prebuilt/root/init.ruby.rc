@@ -6,7 +6,7 @@ on init
     export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt/sdcard 0000 system system
     symlink /mnt/sdcard /sdcard
-    # internal emmc
+    # internal sd on emmc
     export SECONDARY_STORAGE /mnt/emmc
     mkdir /mnt/emmc 0000 system system
     symlink /mnt/emmc /emmc
@@ -97,8 +97,18 @@ on early-fs
     # [3LM] Secure container used for sharing libraries for encrypted apps
     chmod 0771 /data/secure
     mkdir /data/secure/data 0771 system system
+
     mount tmpfs tmpfs /data/secure/data mode=0771,uid=1000,gid=1000
 
+    # btips DDB location
+    mkdir /data/data/btips 0777 bluetooth bluetooth
+    mkdir /data/data/btips/TI 0777 bluetooth bluetooth
+    mkdir /data/data/btips/TI/opp 0777 bluetooth bluetooth
+    mkdir /data/data/btips_tmp 0777 bluetooth bluetooth
+
+    mount tmpfs tmpfs /data/data/btips_tmp size=4m
+
+    # ??
     mkdir /app-cache 0700 root system
     mount tmpfs tmpfs /app-cache size=8m,mode=0755,gid=1000
 
@@ -106,11 +116,11 @@ on boot
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-# + SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
+    # + SSD_RIL Otis from Qualcomm QMI and Netmgrd
     mkdir /data/radio 0770 radio radio
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
     chown radio system /sys/module/rpcrouter_sdio_xprt/parameters/debug_mask
-# - SSD_RIL: Otis: from Qualcomm QMI and Netmgrd
+    # - SSD_RIL Otis from Qualcomm QMI and Netmgrd
 
     write /proc/sys/kernel/sched_latency_ns 5000000
     write /proc/sys/kernel/sched_wakeup_granularity_ns 100000
@@ -146,19 +156,20 @@ on boot
     chown bluetooth bluetooth /sys/devices/platform/gpio-event.0/fm_radio
     chown system system /sys/class/switch/dock/dmb_wakeup
     chown system system /sys/class/switch/bt_dock/bt_pin
+
     # bluetooth power up/down interface
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
-    #set ntrig touch permissions
+    # set ntrig touch permissions
     chown system system dev/ntrig_touch
     chmod 0640 dev/ntrig_touch
 
-    #set atmel touch permissions
+    # set atmel touch permissions
     chown system system /sys/android_touch/unlock
 
-    #set projector permissions
+    # set projector permissions
     chown system system /sys/devices/platform/projector/interface/enable
 
     # give system access to wpa_supplicant.conf for backup and restore
@@ -166,12 +177,6 @@ on boot
     mkdir /data/misc/wifi/sockets 0771 wifi wifi
     mkdir /data/misc/dhcp 0777 wifi wifi
 
-    # btips DDB location
-    mkdir /data/data/btips 0777 bluetooth bluetooth
-    mkdir /data/data/btips/TI 0777 bluetooth bluetooth
-    mkdir /data/data/btips/TI/opp 0777 bluetooth bluetooth
-    mkdir /data/data/btips_tmp 0777 bluetooth bluetooth
-    mount tmpfs tmpfs /data/data/btips_tmp size=4m
     chown dhcp dhcp /data/misc/dhcp
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -205,12 +210,6 @@ on boot
     chown radio radio /sys/module/htc_battery_8x60/parameters/phone_call
     chmod 0660 /sys/module/htc_battery_8x60/parameters/phone_call
 
-#	# for LogMeIn_Rescue
-#	chown nobody.shell ./RescueStarter
-#	chmod 755 ./RescueStarter
-#	chown nobody.shell ./RescueServer
-#	chmod 755 ./RescueServer
-
     # Discretix DRM
     mkdir /data/DxDrm
     mkdir /data/DxDrm/fuse
@@ -220,12 +219,11 @@ on boot
     copy /etc/DxPrdyProvisionObf.pkg /data/DxDrm/Credentials/PlayReady/DxPrdyProvisionObf.pkg
     copy /etc/DxDrmConfig_Server.txt /data/DxDrm/DxDrmConfig_Server.txt
 
-# SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
+    # Enlarge TCP window size for HSDPA Cat 14
     setprop net.tcp.buffersize.hsdpa   4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.umts    4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.edge    4096,174760,1572864,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4096,174760,1572864,4096,8760,11680
-# SSD_RIL : Enlarge TCP window size for HSDPA Cat 14
 
 # Force loading of modem and Q6 images
 service load-modem /system/bin/load-modem.sh
@@ -235,7 +233,9 @@ service load-modem /system/bin/load-modem.sh
 #service kickstart /system/bin/qcks l
 #    oneshot
 
+# shared transport user space mgr service for BT, FM, GPS (i think)
 service uim /system/xbin/uim
+    class main
     user root
     group media bluetooth
     oneshot
@@ -272,7 +272,8 @@ service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
 #    group bluetooth net_bt_admin
 #    disabled
 #    oneshot
-#btips - 2.24
+
+# btips - 2.24
 service btips /system/bin/btipsd --android_log BTIPSD
     class main
     socket bluetooth stream 660 bluetooth bluetooth
@@ -283,42 +284,241 @@ service btips /system/bin/btipsd --android_log BTIPSD
 
 # wifi ++
 # +++ TI soft AP +++
-service tiap_loader /system/bin/tiap_loader tiap0 \
-    -f /system/etc/wifi/firmware_ap.bin -e /proc/calibration \
-    -i /system/etc/wifi/tiwlan_ap.ini
+service tiap_loader /system/bin/tiap_loader tiap0 -f /system/etc/wifi/firmware_ap.bin -e /proc/calibration -i /system/etc/wifi/tiwlan_ap.ini
+    class main
     disabled
     oneshot
 
 service ifcfg2_up /system/bin/ifconfig tiap0 up
+    class main
     disabled
     oneshot
 
 service hostapd /system/bin/hostapd /data/misc/wifi/hostapd.conf
+    class main
     disabled
     oneshot
 # --- TI soft AP ---
 
-service wlan_loader /system/bin/tiwlan_loader \
-    -f /system/etc/wifi/firmware.bin -e /proc/calibration \
-    -i /system/etc/wifi/tiwlan.ini
+service wlan_loader /system/bin/tiwlan_loader -f /system/etc/wifi/firmware.bin -e /proc/calibration -i /system/etc/wifi/tiwlan.ini
+    class main
     disabled
     oneshot
 
 service ifcfg_up /system/bin/ifconfig tiwlan0 up
+    class main
     disabled
     oneshot
 
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    class main
     group system
     socket wpa_tiwlan0 dgram 660 wifi wifi
     disabled
     oneshot
 
 service dhcpcd_tiwlan0 /system/bin/dhcpcd -BKL -d tiwlan0
+    class main
     disabled
     oneshot
 # wifi--
+
+service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmcblk0p26 NULL NULL /dev/block/mmcblk0p27 /dev/block/mmcblk0p28 /dev/block/mmcblk0p20
+    class core
+    user root
+    group radio cache inet misc
+    disabled
+
+on property:ro.emmc=1
+    start rmt_storage
+
+# for modem link
+service modem /system/xbin/wireless_modem
+    user system
+    group system radio
+    disabled
+
+# for modem link
+on property:service.modem.enable=1
+    start modem
+
+# for modem link
+on property:service.modem.enable=0
+    stop modem
+
+service hdmid /system/bin/hdmid
+    class late_start
+    socket displayd stream 0660 root system graphics
+    disabled
+
+service htcbatt /system/bin/htcbatt
+    class late_start
+    user root
+
+service mpdecision /system/bin/mpdecision --Nw 5.4 --Ts 350 --no_sleep --avg_comp --single_core_while_panel_off
+    class late_start
+    user root
+    group radio cache inet misc audio sdcard_rw
+    disabled
+
+service thermald /system/bin/thermald
+    class late_start
+    user root
+    group radio cache inet misc audio
+    disabled
+
+on property:init.svc.bootanim=stopped
+    start thermald
+    start mpdecision
+
+service htc_ebdlogd /system/bin/htc_ebdlogd -s -k -P 7
+    user root
+    disabled
+    oneshot
+    ioprio idle 0
+
+service htc_ebdlogd_rel /system/bin/htc_ebdlogd -s -k
+    user root
+    disabled
+    oneshot
+    ioprio idle 0
+
+on property:ro.build.tags=test-keys
+    start htc_ebdlogd
+
+on property:ro.build.tags=release-keys
+    start htc_ebdlogd_rel
+
+# QMUX must be in multiple groups to support external process connections
+service qmuxd /system/bin/qmuxd
+    class late_start
+    user radio
+    group radio audio
+
+service netmgrd /system/bin/netmgrd
+    class late_start
+
+on property:ro.use_data_netmgrd=false
+    # netmgr not supported on specific target
+    stop netmgrd
+
+service post-boot /system/bin/sh /system/etc/init.post_boot.sh
+    user root
+    oneshot
+
+## Discretix DRM
+#service dx_drm_server /system/bin/DxDrmServerIpc -f -o allow_other /data/DxDrm/fuse
+
+#service ipd /system/bin/ipd
+#    socket ipd stream 666 root inet
+
+#service bootcomplete /system/bin/bootcomplete
+#    user root
+#    group root
+#    disabled
+#    oneshot
+
+#on property:dev.bootcomplete=1
+#    start bootcomplete
+
+#service shutdown /system/bin/shutdown
+#    user root
+#    group root
+#    disabled
+#    oneshot
+
+#service charging /system/bin/charging
+#    user root
+#    group root
+#    disabled
+#    oneshot
+
+#service mpld /system/bin/mpld
+#    user system
+#    oneshot
+
+#service dcvs0 /system/bin/dcvs --cpu=0 --slacktime=16
+#    user root
+#    disabled
+
+#service dcvs1 /system/bin/dcvs --cpu=1 --slacktime=16
+#    user root
+#    disabled
+
+#service dmagent /system/bin/dmagent -N
+#    socket dmagent stream 660 root radio
+#    user root
+#    group radio cache inet misc
+
+#service zchgd_offmode /system/bin/zchgd -pseudooffmode
+#    user root
+#    disabled
+
+#service zchgd_onmode /system/bin/zchgd -onmode
+#    user root
+#    oneshot
+
+#service ril-daemon /system/bin/rild
+#    socket rild stream 660 root radio
+#    socket rild-debug stream 660 radio system
+#    user root
+#    group radio cache inet misc audio qcom_oncrpc diag system
+
+#service ril-daemon /system/bin/rild
+#    socket rild stream 660 root radio
+#    socket rild-debug stream 660 radio system
+#    socket rild-htc stream 660 radio system
+#    socket rild-htc-dmagent stream 660 radio system
+#    socket rild-htc-simapi stream 660 radio system
+#    user root
+#    group radio cache inet misc audio sdcard_rw
+
+#service ril-ims-daemon /system/bin/rild_ims
+#    socket rild-ims stream 660 root radio
+#    user root
+#    group radio cache inet misc audio
+
+## fuse unmount normal mount point
+#service fusermount /system/bin/fusermount -u /data/htcfs
+#    disabled
+#    oneshot
+
+## umount the un-normal mount point
+#service umount /system/bin/umount /data/./htcfs
+#    disabled
+#    oneshot
+
+#service htcfs /system/bin/htcfs /data/htcfs -f -o allow_other
+#    onrestart restart fusermount
+#    onrestart restart umount
+
+#service hfag /system/bin/sdptool add --channel=10 HFAG
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    disabled
+#    oneshot
+
+#service hsag /system/bin/sdptool add --channel=11 HSAG
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    disabled
+#    oneshot
+
+#service opush /system/bin/sdptool add --channel=12 OPUSH
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    disabled
+#    oneshot
+
+#service pbap /system/bin/sdptool add --channel=19 PBAP
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    disabled
+#    oneshot
+
+#service usbnet /system/bin/usbnet on
+#    disabled
+#    oneshot
 
 # [3LM] device manager 3LM service
 #service tund /system/bin/tund
@@ -352,201 +552,3 @@ service dhcpcd_tiwlan0 /system/bin/dhcpcd -BKL -d tiwlan0
 
 #on property:service.ser2net.enable=0
 #    stop srv_ser2net
-
-#service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmcblk0p26 NULL NULL /dev/block/mmcblk0p27 /dev/block/mmcblk0p28 /dev/block/mmcblk0p20
-#    user root
-#    disabled
-
-#on property:ro.emmc=1
-#    start rmt_storage
-
-service dmagent /system/bin/dmagent -N
-    socket dmagent stream 660 root radio
-    user root
-    group radio cache inet misc
-
-# for modem link
-service modem /system/xbin/wireless_modem
-    user system
-    group system radio
-    disabled
-
-# for modem link
-on property:service.modem.enable=1
-	start modem
-
-# for modem link
-on property:service.modem.enable=0
-	stop modem
-
-service zchgd_offmode /system/bin/zchgd -pseudooffmode
-    user root
-    disabled
-
-service zchgd_onmode /system/bin/zchgd -onmode
-    user root
-    oneshot
-
-##+HTC_RIL: from QCT Fusion
-#service qmuxd /system/bin/qmuxd
-
-#service netmgrd /system/bin/netmgrd
-
-#on property:ro.use_data_netmgrd=false
-#    # netmgr not supported on specific target
-#    stop netmgrd
-
-#service ril-daemon /system/bin/rild
-#    socket rild stream 660 root radio
-#    socket rild-debug stream 660 radio system
-#    user root
-#    group radio cache inet misc audio qcom_oncrpc diag system
-
-##-HTC_RIL: from QCT Fusion
-
-service ril-daemon /system/bin/rild
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
-    socket rild-htc stream 660 radio system
-    socket rild-htc-dmagent stream 660 radio system
-    socket rild-htc-simapi stream 660 radio system
-    user root
-    group radio cache inet misc audio sdcard_rw
-
-service ril-ims-daemon /system/bin/rild_ims
-    socket rild-ims stream 660 root radio
-    user root
-    group radio cache inet misc audio
-
-# fuse unmount normal mount point
-service fusermount /system/bin/fusermount -u /data/htcfs
-    disabled
-    oneshot
-
-# umount the un-normal mount point
-service umount /system/bin/umount /data/./htcfs
-    disabled
-    oneshot
-
-service htcfs /system/bin/htcfs /data/htcfs -f -o allow_other
-    onrestart restart fusermount
-    onrestart restart umount
-
-service hfag /system/bin/sdptool add --channel=10 HFAG
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service hsag /system/bin/sdptool add --channel=11 HSAG
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service opush /system/bin/sdptool add --channel=12 OPUSH
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service pbap /system/bin/sdptool add --channel=19 PBAP
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-## for vnc
-#service androidvncserver /system/bin/androidvncserver -a
-#    disabled
-#    oneshot
-
-#service usbnet /system/bin/usbnet on
-#    disabled
-#    oneshot
-
-#service hdmid /system/bin/hdmid
-#    socket displayd stream 0660 root system graphics
-#    disabled
-#    start hdmid
-
-service mpld /system/bin/mpld
-    user system
-    oneshot
-
-service htcbatt /system/bin/htcbatt
-    user root
-
-service dcvs0 /system/bin/dcvs --cpu=0 --slacktime=16
-    user root
-    disabled
-
-service dcvs1 /system/bin/dcvs --cpu=1 --slacktime=16
-    user root
-    disabled
-
-service mpdecision /system/bin/mpdecision --Nw 5.4 --Ts 350 --no_sleep --avg_comp --single_core_while_panel_off
-    user root
-    disabled
-
-service thermald /system/bin/thermald
-    user root
-    disabled
-
-on property:init.svc.bootanim=stopped
-    start thermald
-    start mpdecision
-
-service htc_ebdlogd /system/bin/htc_ebdlogd -s -k -P 7
-    user root
-    disabled
-    oneshot
-    ioprio idle 0
-
-service htc_ebdlogd_rel /system/bin/htc_ebdlogd -s -k
-    user root
-    disabled
-    oneshot
-    ioprio idle 0
-
-# Discretix DRM
-service dx_drm_server /system/bin/DxDrmServerIpc -f -o allow_other /data/DxDrm/fuse
-
-on property:ro.build.tags=test-keys
-    start htc_ebdlogd
-
-on property:ro.build.tags=release-keys
-    start htc_ebdlogd_rel
-
-#Service initiation command for RescueStart for TMOUS
-#service RescueStarter /system/bin/RescueStarter
-#	user nobody
-#	group input graphics
-
-service ipd /system/bin/ipd
-    socket ipd stream 666 root inet
-
-on property:dev.bootcomplete=1
-    start bootcomplete
-
-service bootcomplete /system/bin/bootcomplete
-    user root
-    group root
-    disabled
-    oneshot
-
-service shutdown /system/bin/shutdown
-    user root
-    group root
-    disabled
-    oneshot
-
-service charging /system/bin/charging
-    user root
-    group root
-    disabled
-    oneshot
-
-service post-boot /system/bin/sh /system/etc/init.post_boot.sh
-    user root
-    oneshot

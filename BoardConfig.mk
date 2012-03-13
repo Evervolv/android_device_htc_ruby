@@ -68,9 +68,8 @@ BOARD_USES_QCOM_LIBS := true
 BOARD_USE_LEGACY_TOUCHSCREEN := true
 TARGET_FORCE_CPU_UPLOAD := true
 
-#(temporary signal fix moved libril.so to full_ruby.mk)
-#BOARD_USE_NEW_LIBRIL_HTC := true
-#TARGET_PROVIDES_LIBRIL := vendor/htc/ruby/proprietary/libril.so
+#BOARD_USE_NEW_LIBRIL_HTC    := true
+#TARGET_PROVIDES_LIBRIL      := device/htc/ruby/prebuilt/ril/libril.so
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
 BOARD_KERNEL_BASE := 0x48000000

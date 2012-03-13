@@ -110,6 +110,12 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras \
     nfc.ruby
+# Audio
+PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    audio_policy.msm8660 \
+    audio.primary.msm8660 \
+    libaudioutils
 # not working, complain of missing libmpl (which has no build target)
 # use prebuilts for now
 #PRODUCT_PACKAGES += \
@@ -125,9 +131,12 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/root/ueventd.ruby.rc:root/ueventd.ruby.rc
 
 # Using prebuilt audio libs right now
-PRODUCT_COPY_FILES += \
-    device/htc/ruby/prebuilt/system/lib/hw/audio.primary.default.so:system/lib/hw/audio.primary.msm8660.so \
-    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.msm8660.so
+
+#XXX: these are now segfaulting causing bootloops
+#PRODUCT_COPY_FILES += \
+#    device/htc/ruby/prebuilt/system/lib/hw/audio.primary.default.so:system/lib/hw/audio.primary.msm8660.so \
+#    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.msm8660.so
+
 #    device/htc/ruby/prebuilt/system/lib/hw/audio.a2dp.default.so:system/lib/hw/audio.a2dp.default.so
 
 PRODUCT_COPY_FILES += \
@@ -137,11 +146,11 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/hw/lights.msm8660.so:/system/lib/hw/lights.msm8660.so \
     device/htc/ruby/prebuilt/system/lib/hw/sensors.ruby.so:/system/lib/hw/sensors.ruby.so
 
-# Using prebuilt libril.so right now
-PRODUCT_COPY_FILES += \
-    device/htc/ruby/prebuilt/ril/libril.so:system/lib/libril.so \
-    device/htc/ruby/prebuilt/ril/libreference-ril.so:/system/lib/libreference-ril.so \
-    device/htc/ruby/prebuilt/ril/rild:/system/bin/rild
+## Using prebuilt libril.so right now
+#PRODUCT_COPY_FILES += \
+#    device/htc/ruby/prebuilt/ril/libril.so:system/lib/libril.so \
+#    device/htc/ruby/prebuilt/ril/libreference-ril.so:/system/lib/libreference-ril.so \
+#    device/htc/ruby/prebuilt/ril/rild:/system/bin/rild
 
 # Add touchscreen config file
 PRODUCT_COPY_FILES += \
@@ -167,6 +176,9 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/etc/vold.fstab:system/etc/vold.fstab \
+    device/htc/ruby/prebuilt/system/etc/init.post_boot.sh:system/etc/init.post_boot.sh
+
+PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/etc/apns-conf.xml:system/etc/apns-conf.xml \
     device/htc/ruby/prebuilt/system/etc/spn-conf.xml:system/etc/spn-conf.xml \
     device/htc/ruby/prebuilt/system/etc/voicemail-conf.xml:system/etc/voicemail-conf.xml
