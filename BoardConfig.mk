@@ -56,6 +56,7 @@ TARGET_USES_GENLOCK := true
 TARGET_HAVE_BYPASS := true
 #TARGET_HAVE_HDMI_OUT := true
 BOARD_USE_QCOM_PMEM := true
+TARGET_GRALLOC_USES_ASHMEM := true
 BOARD_EGL_CFG := device/htc/ruby/prebuilt/system/lib/egl/egl.cfg
 #BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
 

@@ -112,15 +112,39 @@ on early-fs
     mkdir /app-cache 0700 root system
     mount tmpfs tmpfs /app-cache size=8m,mode=0755,gid=1000
 
+on post-fs-data
+
+    # Discretix DRM
+    mkdir /data/DxDrm
+    mkdir /data/DxDrm/fuse
+    mkdir /data/DxDrm/Credentials
+    mkdir /data/DxDrm/Credentials/PlayReady
+    chmod 555 /data/DxDrm
+    copy /etc/DxPrdyProvisionObf.pkg /data/DxDrm/Credentials/PlayReady/DxPrdyProvisionObf.pkg
+    copy /etc/DxDrmConfig_Server.txt /data/DxDrm/DxDrmConfig_Server.txt
+
+    # give system access to wpa_supplicant.conf for backup and restore
+    mkdir /data/misc/wifi 0771 wifi wifi
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    mkdir /data/misc/dhcp 0777 wifi wifi
+
+    chown dhcp dhcp /data/misc/dhcp
+    chmod 0770 /data/misc/wifi
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    setprop wifi.interface tiwlan0
+    setprop softap.interface tiap0
+    setprop hostapd.status unloaded
+
+    mkdir /data/radio 0770 radio radio
+
+    setprop vold.post_fs_data_done 1
+
 on boot
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    # + SSD_RIL Otis from Qualcomm QMI and Netmgrd
-    mkdir /data/radio 0770 radio radio
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
     chown radio system /sys/module/rpcrouter_sdio_xprt/parameters/debug_mask
-    # - SSD_RIL Otis from Qualcomm QMI and Netmgrd
 
     write /proc/sys/kernel/sched_latency_ns 5000000
     write /proc/sys/kernel/sched_wakeup_granularity_ns 100000
@@ -162,33 +186,14 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
-    # set ntrig touch permissions
-    chown system system dev/ntrig_touch
-    chmod 0640 dev/ntrig_touch
-
     # set atmel touch permissions
     chown system system /sys/android_touch/unlock
 
     # set projector permissions
     chown system system /sys/devices/platform/projector/interface/enable
 
-    # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0771 wifi wifi
-    mkdir /data/misc/wifi/sockets 0771 wifi wifi
-    mkdir /data/misc/dhcp 0777 wifi wifi
-
-    chown dhcp dhcp /data/misc/dhcp
-    chmod 0770 /data/misc/wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    setprop wifi.interface tiwlan0
-    setprop softap.interface tiap0
-    setprop hostapd.status unloaded
-
     # for modem link
     chown system system /sys/module/serial/parameters/modem_enabled
-    chown system system /dev/ttyHSUSB0
-    chown system system /dev/ttySA0
-    chown system system /dev/smd9
 
     # for Flip to speaker
     chown radio radio /sys/class/htc_accelerometer/accelerometer/PhoneOnOffFlag
@@ -210,14 +215,8 @@ on boot
     chown radio radio /sys/module/htc_battery_8x60/parameters/phone_call
     chmod 0660 /sys/module/htc_battery_8x60/parameters/phone_call
 
-    # Discretix DRM
-    mkdir /data/DxDrm
-    mkdir /data/DxDrm/fuse
-    mkdir /data/DxDrm/Credentials
-    mkdir /data/DxDrm/Credentials/PlayReady
-    chmod 555 /data/DxDrm
-    copy /etc/DxPrdyProvisionObf.pkg /data/DxDrm/Credentials/PlayReady/DxPrdyProvisionObf.pkg
-    copy /etc/DxDrmConfig_Server.txt /data/DxDrm/DxDrmConfig_Server.txt
+    # Load kineto_gan.ko while booting
+     insmod /system/lib/modules/kineto_gan.ko
 
     # Enlarge TCP window size for HSDPA Cat 14
     setprop net.tcp.buffersize.hsdpa   4096,174760,1572864,4096,16384,110208
@@ -229,11 +228,10 @@ on boot
 service load-modem /system/bin/load-modem.sh
     oneshot
 
-# this is causing reboots
-#service kickstart /system/bin/qcks l
-#    oneshot
+service kickstart /system/bin/qcks l
+    oneshot
 
-# shared transport user space mgr service for BT, FM, GPS (i think)
+# shared transport user space mgr service for BT, FM, GPS
 service uim /system/xbin/uim
     class main
     user root

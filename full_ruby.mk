@@ -143,7 +143,6 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/hw/gps.ruby.so:/system/lib/hw/gps.ruby.so \
     device/htc/ruby/prebuilt/system/lib/libloc_api-rpc-qc.so:/system/lib/libloc_api-rpc-qc.so \
     device/htc/ruby/prebuilt/system/lib/libcommondefs.so:system/lib/libcommondefs.so \
-    device/htc/ruby/prebuilt/system/lib/hw/lights.msm8660.so:/system/lib/hw/lights.msm8660.so \
     device/htc/ruby/prebuilt/system/lib/hw/sensors.ruby.so:/system/lib/hw/sensors.ruby.so
 
 ## Using prebuilt libril.so right now
