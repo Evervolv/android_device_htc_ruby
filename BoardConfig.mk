@@ -33,8 +33,9 @@ WIFI_DRIVER_FW_AP_PATH := "/system/etc/wifi/firmware_ap.bin"
 WIFI_DRIVER_MODULE_NAME := "1283"
 
 # Audio
-#BOARD_USES_GENERIC_AUDIO := false
-#BOARD_PREBUILT_LIBAUDIO := true
+BOARD_USES_GENERIC_AUDIO := false
+# prevent breakage from QCOM_HARDWARE in system/audio.h
+COMMON_GLOBAL_CFLAGS += -DLEGACY_AUDIO_COMPAT
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -58,7 +59,7 @@ TARGET_HAVE_BYPASS := true
 BOARD_USE_QCOM_PMEM := true
 TARGET_GRALLOC_USES_ASHMEM := true
 BOARD_EGL_CFG := device/htc/ruby/prebuilt/system/lib/egl/egl.cfg
-#BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
+BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
 
 COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=60 -DQCOM_HARDWARE
 
@@ -67,9 +68,10 @@ BOARD_USES_QCOM_LIBS := true
 
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
+
 TARGET_FORCE_CPU_UPLOAD := true
 
-#BOARD_USE_NEW_LIBRIL_HTC    := true
+BOARD_USE_NEW_LIBRIL_HTC    := true
 #TARGET_PROVIDES_LIBRIL      := device/htc/ruby/prebuilt/ril/libril.so
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby

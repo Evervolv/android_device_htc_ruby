@@ -116,11 +116,10 @@ PRODUCT_PACKAGES += \
     audio_policy.msm8660 \
     audio.primary.msm8660 \
     libaudioutils
-# not working, complain of missing libmpl (which has no build target)
-# use prebuilts for now
 #PRODUCT_PACKAGES += \
 #    libmlplatform \
-#    libmllite
+#    libmllite \
+#    libmpl
 
 # Ramdisk Files
 PRODUCT_COPY_FILES += \
@@ -131,11 +130,9 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/root/ueventd.ruby.rc:root/ueventd.ruby.rc
 
 # Using prebuilt audio libs right now
-
-#XXX: these are now segfaulting causing bootloops
-#PRODUCT_COPY_FILES += \
-#    device/htc/ruby/prebuilt/system/lib/hw/audio.primary.default.so:system/lib/hw/audio.primary.msm8660.so \
-#    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.msm8660.so
+PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/system/lib/hw/audio.primary.msm8660.so:system/lib/hw/audio.primary.msm8660.so \
+    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.msm8660.so:system/lib/hw/audio_policy.msm8660.so
 
 #    device/htc/ruby/prebuilt/system/lib/hw/audio.a2dp.default.so:system/lib/hw/audio.a2dp.default.so
 
@@ -167,6 +164,7 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/usr/keylayout/ruby-keypad.kl:system/usr/keylayout/ruby-keypad.kl \
     device/htc/ruby/prebuilt/system/usr/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl
 
+# This is in vendor for now
 ## Wifi Module
 #PRODUCT_COPY_FILES += \
 #    device/htc/ruby/prebuilt/system/lib/modules/kineto_gan.ko:system/lib/modules/kineto_gan.ko \
