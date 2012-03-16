@@ -11,6 +11,8 @@ TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_ARCH_VARIANT_CPU := cortex-a8
+TARGET_ARCH_VARIANT_FPU := neon
 TARGET_CPU_SMP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 ARCH_ARM_HAVE_VFP := true
@@ -18,8 +20,6 @@ ARCH_ARM_HAVE_VFP := true
 TARGET_BOOTLOADER_BOARD_NAME := ruby
 TARGET_NO_RADIOIMAGE := true
 TARGET_HAVE_TSLIB := false
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
 
 TARGET_SPECIFIC_HEADER_PATH := device/htc/ruby/include
 
