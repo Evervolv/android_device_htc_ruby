@@ -16,7 +16,7 @@ PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=htc_ruby BUILD_FINGERPRINT=tmous/ht
 
 # Set up the product codename, build version & MOTD.
 PRODUCT_CODENAME := Iaceo
-PRODUCT_VERSION_DEVICE_SPECIFIC := p1
+PRODUCT_VERSION_DEVICE_SPECIFIC := p3
 
 PRODUCT_MOTD :="\n\n\n--------------------MESSAGE---------------------\nThank you for choosing Evervolv for your HTC Amaze 4g\n------------------------------------------------\n"
 
