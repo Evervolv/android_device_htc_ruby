@@ -14,7 +14,8 @@
 /dev/diag_arm9          0660    radio   radio
 /dev/btdiag             0660    radio   radio
 
-# Invense MPU3050 XXX mpu/mpuirq dont exist!!
+# Invense MPU3050
+# XXX mpu/mpuirq dont exist!!
 /dev/mpu                0664    system  system
 /dev/mpuirq             0664    system  system
 /dev/timerirq           0664    system  system
@@ -27,6 +28,9 @@
 # radio_feedback
 /dev/radio_feedback     0660    radio   radio
 /dev/sdiotty0           0660    radio   radio
+/dev/sdioctl*           0640    radio   radio
+/dev/rmnet_ctrl         0640    radio   radio
+
 
 # G-Sensor and Compass
 /dev/akm8976_aot        0640    compass system
@@ -60,11 +64,13 @@
 /dev/smdcntl6           0640    radio   radio
 /dev/smdcntl7           0640    radio   radio
 
-# modem link XXX these devices dont exist!!
+# modem link
+# XXX these devices dont exist!!
 /dev/ttyHSUSB0          0600    system  system
 /dev/ttySA0             0600    system  system
 
-# ntrig touch permissions XXX doesnt exist!!
+# ntrig touch permissions
+# XXX doesnt exist!!
 /dev/ntrig_touch        0640    system  system
 
 # gpu driver for adreno200 is globally accessible

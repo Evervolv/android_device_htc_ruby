@@ -202,6 +202,9 @@
          autodetected from the Configuration. -->
     <bool name="config_showNavigationBar">false</bool>
 
+    <!-- Indicate whether the SD card is accessible without removing the battery. -->
+    <bool name="config_batterySdCardAccessibility">true</bool>
+
 <!-- still unsure of these things -->
 
     <!-- Boolean indicating if restoring network selection should be skipped -->
@@ -211,11 +214,5 @@
     <!-- If this value is true, The mms content-disposition field is supported correctly.
          If false, Content-disposition fragments are ignored -->
     <bool name="config_mms_content_disposition_support">false</bool>
-
-    <!-- Flag indicating whether the surface flinger has limited
-         alpha compositing functionality in hardware.  If set, the window
-         manager will disable alpha trasformation in animations where not
-         strictly needed. -->
-    <bool name="config_sf_limitedAlpha">false</bool>
 
 </resources>
