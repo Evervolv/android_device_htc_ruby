@@ -64,17 +64,15 @@ include frameworks/base/build/phone-xhdpi-1024-dalvik-heap.mk
 
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.sf.hw=1 \
-    debug.composition.type=c2d \
+    debug.composition.type=dyn \
     hwui.disable_vsync=false \
     hwui.print_config=choice
-#    debug.enabletr=true \
-#    ro.sf.compbypass.enable=1 \
-
+#    ro.sf.compbypass.enable=1
+#    debug.enabletr=true
+#    dev.pm.dyn_samplingrate=1
 PRODUCT_PROPERTY_OVERRIDES += \
-    debug.qctwa.statusbar=1 \
-    debug.qctwa.preservebuf=1 \
     com.qc.hardware=true
-#    com.qc.hdmi_out=false \
+#    com.qc.hdmi_out=false
 
 # USB
 ADDITIONAL_DEFAULT_PROPERTIES += \
