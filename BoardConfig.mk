@@ -37,11 +37,6 @@ WIFI_DRIVER_FW_STA_PATH := "/system/etc/firmware/firmware.bin"
 WIFI_DRIVER_FW_AP_PATH := "/system/etc/wifi/firmware_ap.bin"
 WIFI_DRIVER_MODULE_NAME := "1283"
 
-# Audio
-BOARD_USES_GENERIC_AUDIO := false
-# prevent breakage from QCOM_HARDWARE in system/audio.h
-COMMON_GLOBAL_CFLAGS += -DLEGACY_AUDIO_COMPAT
-
 # Bluetooth
 #BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := false
@@ -79,6 +74,7 @@ TARGET_FORCE_CPU_UPLOAD := true
 
 BOARD_USE_NEW_LIBRIL_HTC    := true
 #TARGET_PROVIDES_LIBRIL      := device/htc/ruby/prebuilt/ril/libril.so
+BOARD_PROVIDES_LIBRIL       := vendor/htc/ruby/proprietary/libril.so
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
 BOARD_KERNEL_BASE := 0x48000000

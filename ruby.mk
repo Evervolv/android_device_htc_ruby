@@ -140,13 +140,6 @@ PRODUCT_COPY_FILES += \
 #    device/htc/ruby/prebuilt/root/ks:root/system/bin/ks \
 #    device/htc/ruby/prebuilt/root/qcks:root/system/bin/qcks \
 
-# Using prebuilt audio libs right now
-PRODUCT_COPY_FILES += \
-    device/htc/ruby/prebuilt/system/lib/hw/audio.primary.msm8660.so:system/lib/hw/audio.primary.msm8660.so \
-    device/htc/ruby/prebuilt/system/lib/hw/audio_policy.msm8660.so:system/lib/hw/audio_policy.msm8660.so
-
-#    device/htc/ruby/prebuilt/system/lib/hw/audio.a2dp.default.so:system/lib/hw/audio.a2dp.default.so
-
 PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/hw/gps.ruby.so:/system/lib/hw/gps.ruby.so \
     device/htc/ruby/prebuilt/system/lib/libloc_api-rpc-qc.so:/system/lib/libloc_api-rpc-qc.so \
