@@ -146,12 +146,6 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/system/lib/libcommondefs.so:system/lib/libcommondefs.so \
     device/htc/ruby/prebuilt/system/lib/hw/sensors.ruby.so:/system/lib/hw/sensors.ruby.so
 
-## Using prebuilt libril.so right now
-#PRODUCT_COPY_FILES += \
-#    device/htc/ruby/prebuilt/ril/libril.so:system/lib/libril.so \
-#    device/htc/ruby/prebuilt/ril/libreference-ril.so:/system/lib/libreference-ril.so \
-#    device/htc/ruby/prebuilt/ril/rild:/system/bin/rild
-
 # This is in vendor for now
 ## Wifi Module
 #PRODUCT_COPY_FILES += \
