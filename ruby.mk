@@ -14,47 +14,17 @@
 # limitations under the License.
 #
 
-
-PRODUCT_AAPT_CONFIG := normal hdpi
-PRODUCT_AAPT_PREF_CONFIG := hdpi
-PRODUCT_LOCALES += en
 DEVICE_PACKAGE_OVERLAYS += device/htc/ruby/overlay
-# we have enough storage space to hold precise GC data
-PRODUCT_TAGS += dalvik.gc.type-precise
+
+PRODUCT_AAPT_CONFIG         := normal hdpi
+PRODUCT_AAPT_PREF_CONFIG    := hdpi
+PRODUCT_LOCALES             += en
+PRODUCT_TAGS                += dalvik.gc.type-precise
 
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.com.google.locationfeatures=1 \
-    ro.com.google.networklocation=1 \
-    ro.com.google.gmsversion=2.3_r5 \
-    ro.com.google.clientidbase=android-htc \
-    ro.com.google.clientidbase.yt=android-htc \
-    ro.com.google.clientidbase.am=android-tmobile-us \
-    ro.com.google.clientidbase.vs=android-hms-tmobile-us \
-    ro.com.google.clientidbase.gmm=android-htc \
-    ro.com.google.clientidbase.ms=android-hms-tmobile-us \
-    ro.cdma.home.operator.numeric=310120 \
-    ro.phone.min_match=7 \
-    ro.ril.enable.dtm=0 \
-    ro.ril.def.agps.mode=2 \
-    ro.ril.gprsclass=12 \
-    ro.ril.hsdpa.category=10 \
-    ro.ril.hsupa.category=6 \
-    ro.ril.hsxpa=3 \
-    ro.telephony.default_network=0 \
     ro.telephony.ril.v3=signalstrength,singlepdp \
-    ro.config.lte=true \
-    telephony.lteOnCdmaDevice=0 \
-    gsm.sim.operator.alpha=tmobile \
-    gsm.sim.operator.numeric=310120 \
-    gsm.sim.operator.iso-country=us \
-    gsm.operator.alpha=tmobile \
-    gsm.operator.numeric=310120 \
-    gsm.operator.iso-country=us \
-    wifi.interface=tiwlan0 \
-    wifi.supplicant_scan_interval=45 \
     ro.media.dec.jpeg.memcap=20000000 \
-    ro.opengles.version=131072 \
     dalvik.vm.lockprof.threshold=500 \
     dalvik.vm.dexopt-flags=m=y \
     ro.sf.lcd_density=240
@@ -63,14 +33,16 @@ PRODUCT_PROPERTY_OVERRIDES += \
 include frameworks/base/build/phone-xhdpi-1024-dalvik-heap.mk
 
 PRODUCT_PROPERTY_OVERRIDES += \
+    debug.fb.rgb565=0 \
     debug.sf.hw=1 \
     debug.composition.type=dyn \
     hwui.disable_vsync=false \
-    hwui.print_config=choice
+    hwui.print_config=choice \
 #    ro.sf.compbypass.enable=1
 #    debug.enabletr=true
-#    dev.pm.dyn_samplingrate=1
+
 PRODUCT_PROPERTY_OVERRIDES += \
+    debug.qctwa.preservebuf=1 \
     com.qc.hardware=true
 #    com.qc.hdmi_out=false
 
@@ -79,8 +51,10 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     persist.sys.usb.config=mass_storage \
     persist.service.adb.enable=1
 
+#
+# Packages required for ruby
+#
 PRODUCT_PACKAGES += \
-    librs_jni \
     copybit.msm8660 \
     gralloc.msm8660 \
     hwcomposer.msm8660 \
@@ -94,10 +68,12 @@ PRODUCT_PACKAGES += \
     libstagefrighthw \
     libdivxdrmdecrypt \
     com.android.future.usb.accessory
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
     setup_fs
+
 # NFC Support
 PRODUCT_PACKAGES += \
     libnfc \
@@ -106,81 +82,90 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras \
     nfc.ruby
+
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio_policy.msm8660 \
     audio.primary.msm8660 \
     libaudioutils
+
 #PRODUCT_PACKAGES += \
 #    libmlplatform \
 #    libmllite \
 #    libmpl
 
-# Prebuilt files/configs
+# Ramdisk (ks/qcks copied from vendor)
 PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/root/init.qcom.sh:root/init.qcom.sh \
     device/htc/ruby/prebuilt/root/init.ruby.rc:root/init.ruby.rc \
     device/htc/ruby/prebuilt/root/init.ruby.usb.rc:root/init.ruby.usb.rc \
-    device/htc/ruby/prebuilt/root/ueventd.ruby.rc:root/ueventd.ruby.rc \
-    device/htc/ruby/prebuilt/system/etc/vold.fstab:system/etc/vold.fstab \
-    device/htc/ruby/prebuilt/system/etc/init.post_boot.sh:system/etc/init.post_boot.sh \
-    device/htc/ruby/prebuilt/system/usr/idc/atmel-touchscreen.idc:system/usr/idc/atmel-touchscreen.idc \
-    device/htc/ruby/prebuilt/system/usr/idc/ruby-keypad.idc:system/usr/idc/ruby-keypad.idc \
-    device/htc/ruby/prebuilt/system/usr/keychars/qwerty2.kcm.bin:system/usr/keychars/qwerty2.kcm.bin \
-    device/htc/ruby/prebuilt/system/usr/keychars/qwerty.kcm.bin:system/usr/keychars/qwerty.kcm.bin \
-    device/htc/ruby/prebuilt/system/usr/keychars/ruby-keypad.kcm.bin:system/usr/keychars/ruby-keypad.kcm.bin \
-    device/htc/ruby/prebuilt/system/usr/keylayout/atmel-touchscreen.kl:system/usr/keylayout/atmel-touchscreen.kl \
-    device/htc/ruby/prebuilt/system/usr/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
-    device/htc/ruby/prebuilt/system/usr/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
-    device/htc/ruby/prebuilt/system/usr/keylayout/ruby-keypad.kl:system/usr/keylayout/ruby-keypad.kl \
-    device/htc/ruby/prebuilt/system/usr/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    device/htc/ruby/prebuilt/system/etc/spn-conf.xml:system/etc/spn-conf.xml \
-    device/htc/ruby/prebuilt/system/etc/voicemail-conf.xml:system/etc/voicemail-conf.xml
+    device/htc/ruby/prebuilt/root/ueventd.ruby.rc:root/ueventd.ruby.rc
 
-#    device/htc/ruby/prebuilt/root/ks:root/system/bin/ks \
-#    device/htc/ruby/prebuilt/root/qcks:root/system/bin/qcks \
-
+# Boot scripts
 PRODUCT_COPY_FILES += \
-    device/htc/ruby/prebuilt/system/lib/hw/gps.ruby.so:/system/lib/hw/gps.ruby.so \
-    device/htc/ruby/prebuilt/system/lib/libloc_api-rpc-qc.so:/system/lib/libloc_api-rpc-qc.so \
-    device/htc/ruby/prebuilt/system/lib/libcommondefs.so:system/lib/libcommondefs.so \
-    device/htc/ruby/prebuilt/system/lib/hw/sensors.ruby.so:/system/lib/hw/sensors.ruby.so
+    device/htc/ruby/prebuilt/etc/init.goldfish.sh:system/etc/init.goldfish.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.fm.sh:system/etc/init.qcom.fm.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.sdio.sh:system/etc/init.qcom.sdio.sh \
+    device/htc/ruby/prebuilt/etc/init.qcom.wifi.sh:system/etc/init.qcom.wifi.sh
 
-# This is in vendor for now
-## Wifi Module
-#PRODUCT_COPY_FILES += \
-#    device/htc/ruby/prebuilt/system/lib/modules/kineto_gan.ko:system/lib/modules/kineto_gan.ko \
-#    device/htc/ruby/prebuilt/system/lib/modules/tiwlan_drv.ko:system/lib/modules/tiwlan_drv.ko \
-#    device/htc/ruby/prebuilt/system/lib/modules/tiap_drv.ko:system/lib/modules/tiap_drv.ko
-
-# Prebuilt kernel
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-    LOCAL_KERNEL := device/htc/ruby/prebuilt/root/kernel
-else
-    LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += $(LOCAL_KERNEL):kernel
-
-# These are the hardware-specific features
+# Configs
 PRODUCT_COPY_FILES += \
-    frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
+    device/htc/ruby/prebuilt/etc/vold.fstab:system/etc/vold.fstab \
+    device/htc/ruby/prebuilt/etc/spn-conf.xml:system/etc/spn-conf.xml \
+    device/htc/ruby/prebuilt/etc/voicemail-conf.xml:system/etc/voicemail-conf.xml
+
+# Idc
+PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/usr/idc/atmel-touchscreen.idc:system/usr/idc/atmel-touchscreen.idc \
+    device/htc/ruby/prebuilt/usr/idc/ruby-keypad.idc:system/usr/idc/ruby-keypad.idc \
+
+# Keychars
+PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/usr/keychars/ruby-keypad.kcm:system/usr/keychars/ruby-keypad.kcm
+
+# Keylayout
+PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/usr/keylayout/atmel-touchscreen.kl:system/usr/keylayout/atmel-touchscreen.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/ruby-keypad.kl:system/usr/keylayout/ruby-keypad.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_045e_Product_028e.kl:system/usr/keylayout/Vendor_045e_Product_028e.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_046d_Product_c216.kl:system/usr/keylayout/Vendor_046d_Product_c216.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_046d_Product_c294.kl:system/usr/keylayout/Vendor_046d_Product_c294.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_046d_Product_c299.kl:system/usr/keylayout/Vendor_046d_Product_c299.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_046d_Product_c532.kl:system/usr/keylayout/Vendor_046d_Product_c532.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_054c_Product_0268.kl:system/usr/keylayout/Vendor_054c_Product_0268.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_05ac_Product_0239.kl:system/usr/keylayout/Vendor_05ac_Product_0239.kl \
+    device/htc/ruby/prebuilt/usr/keylayout/Vendor_22b8_Product_093d.kl:system/usr/keylayout/Vendor_22b8_Product_093d.kl
+
+# Default permissions
+PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/base/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/base/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
     frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
     frameworks/base/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
+    frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/base/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
     frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
-    frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/base/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-    frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml
+    frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+    frameworks/base/location/lib/com.android.location.provider.xml:system/etc/permissions/com.android.location.provider.xml \
+    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
+
+# Other permissions
+PRODUCT_COPY_FILES += \
+    frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
 
 # recovery charge mode support
 include device/htc/ruby/recovery/recovery.mk

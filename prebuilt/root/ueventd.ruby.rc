@@ -10,21 +10,17 @@
 /dev/oncrpc/*           0660    root    qcom_oncrpc
 
 # pana gyro
-/dev/ewtzmu2hal         0666    system  system
-/dev/ewtzmu2daemon      0666    system  system
-/dev/ewtzmu2            0666    system  system
+/dev/ewtzmu2hal         0664    system  system
+/dev/ewtzmu2daemon      0664    system  system
+/dev/ewtzmu2            0664    system  system
 
 # G-Sensor and Compass
-/dev/akm8976_aot        0640    compass system
-/dev/akm8976_daemon     0640    compass system
-/dev/akm8973_aot        0640    compass system
-/dev/akm8973_daemon     0640    compass system
 /dev/akm8975_aot        0640    compass system
 /dev/akm8975_daemon     0640    compass system
 /dev/bma150             0640    compass system
 
 # camera
-/dev/gemini0            0660    system  camera
+/dev/gemini*            0660    system  camera
 
 # bluetooth
 /dev/ttyMSM0              0600   bluetooth  bluetooth
@@ -135,7 +131,7 @@
 /dev/msm_a2dp_in          0640  system       audio
 /dev/msm_amrnb_in         0640  system       audio
 
-# diag permissions XXX none of these exist!!
+# diag permissions
 /dev/diag               0660    radio   radio
 /dev/diag_mdm           0660    radio   radio
 /dev/htcdiag            0660    radio   radio
@@ -143,16 +139,13 @@
 /dev/btdiag             0660    radio   radio
 
 # Invense MPU3050
-# XXX mpu/mpuirq dont exist!!
 /dev/mpu                0664    system  system
 /dev/mpuirq             0664    system  system
 /dev/timerirq           0664    system  system
 
 # modem link
-# XXX these devices dont exist!!
 /dev/ttyHSUSB0          0600    system  system
 /dev/ttySA0             0600    system  system
 
 # ntrig touch permissions
-# XXX doesnt exist!!
 /dev/ntrig_touch        0640    system  system

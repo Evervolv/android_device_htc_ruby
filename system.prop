@@ -1,15 +1,10 @@
 #
 # system.prop for ruby
 #
-rild.libpath=/system/lib/libril-qc-qmi-1.so
-rild.libargs=-d/dev/smd0
-#
-# Modify MMS APN retry timer from 5s to 2s.
-#
-ro.gsm.2nd_data_retry_config=max_retries=3,2000,2000,2000
-#
+
 #+HTC_RIL: from QCT Fusion
-#
+rild.libpath=/system/lib/libril-qc-qmi-1.so
+rild.libargs=-d /dev/smd0
 persist.rild.nitz_plmn=
 persist.rild.nitz_long_ons_0=
 persist.rild.nitz_long_ons_1=
@@ -22,6 +17,7 @@ persist.rild.nitz_short_ons_3=
 persist.rild.ril.ltedr=0
 persist.rild.ril.ltedrtable=max_retries=infinite,10000
 DEVICE_PROVISIONED=1
+
 #
 # system props for the cne module
 #
@@ -45,18 +41,54 @@ persist.cne.be.do.sqi.min=0
 persist.cne.be.do.sqi.max=100
 persist.cne.be.wlan.sqi.min=0
 persist.cne.be.wlan.sqi.max=100
+
 #
 # system props for the data modules
 #
 ro.use_data_netmgrd=true
 persist.data_netmgrd_nint=11
+
 #
 # system props for telephony modules
 #
+#device supports LTE
+ro.config.lte=true
 #device supports EHRPD
 #ro.config.ehrpd=true
 #device supports simultaneous 1x voice + LTE
 #ro.config.svlte1x=true
-#
 #-HTC_RIL: from QCT Fusion
-#
+# Modify MMS APN retry timer from 5s to 2s.
+ro.gsm.2nd_data_retry_config = max_retries=3, 2000, 2000, 2000
+
+# pyramid RF team request
+ro.ril.enable.dtm = 0
+ro.ril.gprsclass = 12
+ro.ril.hsdpa.category = 10
+ro.ril.hsupa.category = 6
+ro.ril.hsxpa = 3
+
+# Default network type.
+# 0 => WCDMA preferred.
+ro.telephony.default_network=0
+
+wifi.interface=wlan0
+wifi.supplicant_scan_interval=45
+
+# The OpenGL ES API level that is natively supported by this device.
+# This is a 16.16 fixed point number
+ro.opengles.version = 131072
+
+# For the default value of agps
+ro.ril.def.agps.mode = 2
+
+# For HSDPA low throughput
+ro.ril.disable.power.collapse = 1
+
+# For Pyramid China NEL
+ro.ril.enable.prl.recognition = 1
+
+# For QC perf binary hooks
+# src:vendor/qcom/proprietary/android-perf/release/lib/<CPU arch>/libqc-opt.so
+ro.vendor.extension_library=/system/lib/libqc-opt.so
+

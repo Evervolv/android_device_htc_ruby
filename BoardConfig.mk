@@ -58,7 +58,7 @@ TARGET_HAVE_BYPASS := true
 #TARGET_HAVE_HDMI_OUT := true
 BOARD_USE_QCOM_PMEM := true
 TARGET_GRALLOC_USES_ASHMEM := true
-BOARD_EGL_CFG := device/htc/ruby/prebuilt/system/lib/egl/egl.cfg
+BOARD_EGL_CFG := device/htc/ruby/egl.cfg
 BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
 BOARD_HAS_SCREEN_OFF_FLICKER := true
 
@@ -73,7 +73,6 @@ BOARD_USE_LEGACY_TOUCHSCREEN := true
 TARGET_FORCE_CPU_UPLOAD := true
 
 BOARD_USE_NEW_LIBRIL_HTC    := true
-#TARGET_PROVIDES_LIBRIL      := device/htc/ruby/prebuilt/ril/libril.so
 BOARD_PROVIDES_LIBRIL       := vendor/htc/ruby/proprietary/libril.so
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
@@ -114,7 +113,7 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 20044333056
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
-BOARD_VOLD_MAX_PARTITIONS := 36
+BOARD_VOLD_MAX_PARTITIONS := 37
 
 TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
 

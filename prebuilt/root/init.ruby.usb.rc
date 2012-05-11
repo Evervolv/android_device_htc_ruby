@@ -1,18 +1,15 @@
-#
-# TODO: fill in proper values, this isnt a nexus s
-#
 on boot
     write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
     write /sys/class/android_usb/android0/iProduct $ro.product.model
     write /sys/class/android_usb/android0/iSerial $ro.serialno
-    write /sys/class/android_usb/android0/f_mass_storage/inquiry_string "Google Nexus S 0100"
+    write /sys/class/android_usb/android0/f_mass_storage/inquiry_string "HTC Amaze 4g"
     write /sys/class/android_usb/android0/f_rndis/manufacturer Htc
-    write /sys/class/android_usb/android0/f_rndis/vendorID 0bb4
+    write /sys/class/android_usb/android0/f_rndis/vendorID 18d1
     write /sys/class/android_usb/android0/f_rndis/wceis 1
 
 on property:sys.usb.config=mass_storage
     write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0bb4
+    write /sys/class/android_usb/android0/idVendor 18d1
     write /sys/class/android_usb/android0/idProduct d001
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/enable 1
@@ -20,7 +17,7 @@ on property:sys.usb.config=mass_storage
 
 on property:sys.usb.config=mass_storage,adb
     write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0bb4
+    write /sys/class/android_usb/android0/idVendor 18d1
     write /sys/class/android_usb/android0/idProduct d002
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/enable 1
@@ -29,7 +26,7 @@ on property:sys.usb.config=mass_storage,adb
 
 on property:sys.usb.config=rndis
     write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0bb4
+    write /sys/class/android_usb/android0/idVendor 18d1
     write /sys/class/android_usb/android0/idProduct d003
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/bDeviceClass 224
@@ -38,7 +35,7 @@ on property:sys.usb.config=rndis
 
 on property:sys.usb.config=rndis,adb
     write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0bb4
+    write /sys/class/android_usb/android0/idVendor 18d1
     write /sys/class/android_usb/android0/idProduct d004
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/bDeviceClass 224
