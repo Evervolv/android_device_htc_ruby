@@ -1,45 +1,49 @@
+#
+# Copyright (C) 2009 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 # inherit from the proprietary version
 -include vendor/htc/ruby/BoardConfigVendor.mk
+# inherit common msm8660 defines
+include device/htc/msm8660-common/BoardConfigCommon.mk
+
+# override common stuff that wont build just yet
+TARGET_QCOM_HDMI_OUT := false
+TARGET_QCOM_HDMI_RESOLUTION_AUTO := false
+COMMON_GLOBAL_CFLAGS += -UWITH_QCOM_LPA
+TARGET_USES_QCOM_LPA := false
+DYNAMIC_SHARED_LIBV8SO := false
+# override dhd defines
+WIFI_BAND :=
+WPA_SUPPLICANT_VERSION :=
+BOARD_WPA_SUPPLICANT_DRIVER :=
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB :=
+BOARD_HOSTAPD_DRIVER :=
+BOARD_HOSTAPD_PRIVATE_LIB :=
+BOARD_WLAN_DEVICE :=
+WIFI_DRIVER_FW_PATH_STA :=
+WIFI_DRIVER_FW_PATH_AP :=
+WIFI_DRIVER_FW_PATH_P2P :=
+WIFI_DRIVER_FW_PATH_PARAM :=
+WIFI_DRIVER_MODULE_NAME :=
+WIFI_DRIVER_MODULE_PATH :=
 
 USE_CAMERA_STUB := true
 
-TARGET_NO_BOOTLOADER := true
-
-TARGET_BOARD_PLATFORM := msm8660
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
-
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_ARCH_VARIANT_CPU := cortex-a8
-TARGET_ARCH_VARIANT_FPU := neon
-TARGET_CPU_SMP := true
-ARCH_ARM_HAVE_TLS_REGISTER := true
-ARCH_ARM_HAVE_VFP := true
-
-TARGET_USE_SCORPION_BIONIC_OPTIMIZATION := true
-TARGET_USE_SCORPION_PLD_SET := true
-TARGET_SCORPION_BIONIC_PLDOFFS := 6
-TARGET_SCORPION_BIONIC_PLDSIZE := 128
-
 TARGET_BOOTLOADER_BOARD_NAME := ruby
 TARGET_NO_RADIOIMAGE := true
-TARGET_HAVE_TSLIB := false
-
-TARGET_SPECIFIC_HEADER_PATH := device/htc/ruby/include
-
-# Wifi related defines
-BOARD_WPA_SUPPLICANT_DRIVER := WEXT
-WPA_SUPPLICANT_VERSION := VER_0_6_X
-BOARD_WLAN_DEVICE := 1283
-WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/tiwlan_drv.ko"
-WIFI_DRIVER_FW_STA_PATH := "/system/etc/firmware/firmware.bin"
-WIFI_DRIVER_FW_AP_PATH := "/system/etc/wifi/firmware_ap.bin"
-WIFI_DRIVER_MODULE_NAME := "1283"
-
-# Bluetooth
-#BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := false
 
 # Gps
 #BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
@@ -48,29 +52,10 @@ BOARD_HAVE_BLUETOOTH_BCM := false
 # Enable NFC
 BOARD_HAVE_NFC := true
 
-# Define egl.cfg location
-USE_OPENGL_RENDERER := true
-TARGET_USES_C2D_COMPOSITION := true
-TARGET_USES_OVERLAY := true
-TARGET_USES_GENLOCK := true
-TARGET_USES_SF_BYPASS := true
-TARGET_HAVE_BYPASS := true
-#TARGET_HAVE_HDMI_OUT := true
-BOARD_USE_QCOM_PMEM := true
-TARGET_GRALLOC_USES_ASHMEM := true
-BOARD_EGL_CFG := device/htc/ruby/egl.cfg
-BOARD_OVERLAY_FORMAT_YCbCr_420_SP := true
 BOARD_HAS_SCREEN_OFF_FLICKER := true
-
-COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=60 -DQCOM_HARDWARE
-
-BOARD_USES_QCOM_HARDWARE := true
-BOARD_USES_QCOM_LIBS := true
 
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
-
-TARGET_FORCE_CPU_UPLOAD := true
 
 BOARD_USE_NEW_LIBRIL_HTC    := true
 BOARD_PROVIDES_LIBRIL       := vendor/htc/ruby/proprietary/libril.so
@@ -119,7 +104,6 @@ TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
 
 BOARD_SDCARD_DEVICE_PRIMARY := /dev/block/mmcblk1p1
 BOARD_SDCARD_DEVICE_SECONDARY := /dev/block/mmcblk0p36
-BOARD_SDEXT_DEVICE := /dev/block/mmcblk1p2
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
