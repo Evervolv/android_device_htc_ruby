@@ -103,6 +103,14 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/prebuilt/usr/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
     device/htc/ruby/prebuilt/usr/keylayout/ruby-keypad.kl:system/usr/keylayout/ruby-keypad.kl
 
+# Kernel Modules
+ifeq (,$(BUILD_KERNEL))
+PRODUCT_COPY_FILES += $(shell \
+    find device/htc/ruby/prebuilt/modules -name '*.ko' \
+    | sed -r 's/^\/?(.*\/)([^/ ]+)$$/\1\2:system\/lib\/modules\/\2/' \
+    | tr '\n' ' ')
+endif
+
 # Default permissions
 PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
