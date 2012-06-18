@@ -1,5 +1,9 @@
 import init.ruby.usb.rc
 
+on early-init
+
+    device /dev/block/mmcblk0p16 0460 radio diag
+
 on init
 
     # external sdcard
@@ -11,23 +15,52 @@ on init
     mkdir /mnt/emmc 0000 system system
     symlink /mnt/emmc /emmc
 
-on early-fs
-
+    # create our mount directories
     mkdir /system
     mkdir /data     0771 system system
     mkdir /cache    0770 system cache
     mkdir /devlog   0700 root   root
-
-    mount ext4 /dev/block/mmcblk0p29 /system wait ro noatime barrier=1
-    mount ext4 /dev/block/mmcblk0p30 /cache wait noatime nosuid nodev barrier=1
-    mount ext4 /dev/block/mmcblk0p31 /data wait noatime nosuid nodev barrier=1 noauto_da_alloc
-    mount ext4 /dev/block/mmcblk0p32 /devlog wait noatime nosuid nodev barrier=1
-
     rm /vendor
     mkdir /vendor               0771 system system
     mkdir /vendor/firmware      0771 system system
     mkdir /vendor/firmware/misc 0771 system system
     mkdir /vendor/firmware/adsp 0771 system system
+    mkdir /vendor/firmware/misc_mdm 0771 system system
+
+    # double check the perms and set owner
+    chown root root /devlog
+    chmod 0700 /devlog
+
+    # for Invense MPU3050
+    chmod 0664 /dev/mpu
+    chmod 0664 /dev/mpuirq
+    chmod 0664 /dev/timerirq
+    chown system system /dev/mpu
+    chown system system /dev/mpuirq
+    chown system system /dev/timerirq
+
+    # set G-Sensor and Compass permissions
+    chown compass system /dev/akm8975_aot
+    chown compass system /dev/akm8975_daemon
+    chown compass system /dev/bma150
+    chmod 0640 /dev/akm8975_aot
+    chmod 0640 /dev/akm8975_daemon
+    chmod 0640 /dev/bma150
+
+    # set pana gyro permissions
+    chmod 0664 /dev/ewtzmu2daemon
+    chmod 0664 /dev/ewtzmu2hal
+    chmod 0664 /dev/ewtzmu2
+    chown system system /dev/ewtzmu2hal
+    chown system system /dev/ewtzmu2daemon
+    chown system system /dev/ewtzmu2
+
+on early-fs
+
+    mount ext4 /dev/block/mmcblk0p29 /system wait ro noatime barrier=1
+    mount ext4 /dev/block/mmcblk0p30 /cache wait noatime nosuid nodev barrier=1
+    mount ext4 /dev/block/mmcblk0p31 /data wait noatime nosuid nodev barrier=1 noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p32 /devlog wait noatime nosuid nodev barrier=1
 
     mount vfat /dev/block/mmcblk0p17 /vendor/firmware/misc wait ro shortname=lower
     mount vfat /dev/block/mmcblk0p21 /vendor/firmware/adsp wait ro shortname=lower
@@ -54,7 +87,6 @@ on early-fs
     symlink /vendor/firmware/misc/modem.b00 /vendor/firmware/modem.b00
     symlink /vendor/firmware/misc/modem.mdt /vendor/firmware/modem.mdt
 
-    mkdir /vendor/firmware/misc_mdm 0771 system system
     mount vfat /dev/block/mmcblk0p18 /vendor/firmware/misc_mdm wait ro shortname=lower
 
     symlink /vendor/firmware/misc_mdm/image/amss.mbn /vendor/firmware/amss.mbn
@@ -67,25 +99,17 @@ on early-fs
     symlink /vendor/firmware/misc_mdm/image/amss.mbn /vendor/firmware/amss.mbn
     symlink /vendor/firmware/misc_mdm/image/htcssmem.mbn /vendor/firmware/htcssmem.mbn
 
-    # double check the perms and set owner
-    chown root root /devlog
-    chmod 0700 /devlog
+on post-fs
+
+    mkdir /data/qcks 0770 system system
 
 on post-fs-data
-
-#    # Discretix DRM
-#    mkdir /data/DxDrm
-#    mkdir /data/DxDrm/fuse
-#    mkdir /data/DxDrm/Credentials
-#    mkdir /data/DxDrm/Credentials/PlayReady
-#    chmod 555 /data/DxDrm
-#    copy /etc/DxPrdyProvisionObf.pkg /data/DxDrm/Credentials/PlayReady/DxPrdyProvisionObf.pkg
-#    copy /etc/DxDrmConfig_Server.txt /data/DxDrm/DxDrmConfig_Server.txt
 
     # HTC_WIFI
     mkdir /data/misc/wifi           0770 wifi wifi
     mkdir /data/misc/wifi/sockets   0770 wifi wifi
     mkdir /data/misc/dhcp           0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
     chown wifi wifi /system/etc/firmware/ti-connectivity/*
     chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
     chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
@@ -94,13 +118,39 @@ on post-fs-data
 
     mkdir /data/radio 0770 radio radio
     mkdir /data/d 0777 system system
-    mkdir /data/qcks 0770 system system
 
+# HTC add: Smartcard Service on ICS
+    chmod 0660 /dev/assd
+    chown smartcard smartcard /dev/assd
+
+# HTC add: 3LM setting on ICS
+    setprop ro.3lm.production 1
+
+# HTC add: 3LM encryption on ICS
+    setprop ro.3lm.legacy_encryption 1
+    mkdir /data/secure 0755 system system
+    mkdir /data/secure/data 0755 system system
+    mount tmpfs tmpfs /data/secure/data mode=0755,gid=1000
+
+# HTC add: double check the perms of /data/data for already existed case
+    chown system system /data/data
+    chmod 0771 /data/data
+    chmod 0660 /data/data/com.android.providers.settings/databases/settings.db-wal
+    chmod 0660 /data/data/com.android.providers.settings/databases/settings.db-shm
+    chmod 0660 /data/data/com.android.providers.settings/databases/settings.db-journal
+
+# HTC add: double check the perms of /data/data/recovery for already existed case
+    chown root recvy_access /data/data/recovery
+    chmod 0775 /data/data/recovery
+
+    chown system system /sys/class/graphics/fb0/ratelimit
+
+    # Set indication (checked by vold) that we have finished this action
     setprop vold.post_fs_data_done 1
 
 on boot
 
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
+#    mount debugfs /sys/kernel/debug /sys/kernel/debug
     mount debugfs /data/d /data/d
 
     chown radio system /sys/module/smd_rpcrouter/parameters/debug_mask
@@ -111,8 +161,17 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
+    # HTC_WIFI
+    insmod /system/lib/modules/compat.ko
+    insmod /system/lib/modules/cfg80211.ko
+    insmod /system/lib/modules/mac80211.ko
+    insmod /system/lib/modules/wl12xx.ko debug_level=0x63c00
+
     # for modem link
     chown system system /sys/module/serial/parameters/modem_enabled
+    chown system system /dev/ttyHSUSB0
+    chown system system /dev/ttySA0
+    chown system system /dev/smd9
 
     # for Flip to speaker
     chown radio radio /sys/class/htc_accelerometer/accelerometer/PhoneOnOffFlag
@@ -128,12 +187,20 @@ on boot
     chown system system /sys/class/optical_sensors/proximity/ps_test_mode
 
     # permissions for NFC
-#    setprop ro.nfc.port "I2C"
+    chmod 0600 /dev/pn544
+    chown nfc nfc /dev/pn544
     setprop debug.nfc.fw_download "false"
+
+    # for simlock
+    chown radio radio /dev/simlock
+    chmod 0660 /dev/simlock
 
     # for charging function
     chown radio radio /sys/module/htc_battery_8x60/parameters/phone_call
     chmod 0660 /sys/module/htc_battery_8x60/parameters/phone_call
+
+    # for RIL to notify battery driver talking and network_search state
+    chown radio radio /sys/class/power_supply/battery/phone_call
 
     # KSM
     write /sys/kernel/mm/ksm/sleep_millisecs 3000
@@ -141,19 +208,104 @@ on boot
     write /sys/kernel/mm/ksm/run 1
 
     # Load kineto_gan.ko while booting
-     insmod /system/lib/modules/kineto_gan.ko
+    insmod /system/lib/modules/kineto_gan.ko
 
-    # HTC_WIFI
-    insmod /system/lib/modules/compat.ko
-    insmod /system/lib/modules/cfg80211.ko
-    insmod /system/lib/modules/mac80211.ko
-    insmod /system/lib/modules/wl12xx.ko debug_level=0x63c00
-
+# HTC add: Define TCP buffer sizes for various networks
+    # ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
     # Enlarge TCP window size for HSDPA Cat 14
     setprop net.tcp.buffersize.hsdpa   4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.umts    4096,174760,1572864,4096,16384,110208
     setprop net.tcp.buffersize.edge    4096,174760,1572864,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4096,174760,1572864,4096,8760,11680
+    setprop net.tcp.buffersize.lte     4096,221184,3461120,4096,221184,3461120
+    setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.wimax   4096,221184,524288,4096,16384,110208
+
+# HTC add: Assign TCP buffer thresholds to be ceiling value of technology maximums
+    # Increased technology maximums should be reflected here.
+    write /proc/sys/net/core/rmem_max  262144
+    write /proc/sys/net/core/wmem_max  262144
+
+# HTC add: Assign TCP buffer thresholds to be ceiling value of technology maximums
+    # Increased technology maximums should be reflected here.
+    write /proc/sys/net/core/rmem_max  262144
+    write /proc/sys/net/core/wmem_max  262144
+
+# HTC add: set RLIMIT_NICE to allow priorities from 19 to -20
+    setrlimit 8 268435456 268435456
+
+# HTC add: Tweak background writeout
+    write /proc/sys/vm/dirty_bytes 10240000
+    write /proc/sys/vm/highmem_is_dirtyable 1
+
+# HTC add: Permissions for System Server and daemons.
+    chmod 0444 /sys/android_camera/fps_mode
+    chmod 0660 /sys/android_camera2/htcwc
+    chown media system /sys/android_camera2/htcwc
+    chown media system /sys/android_camera/cam3Dmode
+    chown radio system /sys/camera_led_status/led_ril_status
+    chown system system /sys/camera_led_status/led_wimax_status
+    chown system system /sys/camera_led_status/led_hotspot_status
+    chown media system /sys/android_camera/cam_mode
+
+# HTC SSD Peripheral UI - BEGIN
+    chown system system /sys/class/leds/red/brightness
+    chown system system /sys/class/leds/red/blink
+    chown system system /sys/class/leds/red/off_timer
+    chown system system /sys/class/leds/green/brightness
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/green/off_timer
+    chown system system /sys/class/leds/blue/brightness
+    chown system system /sys/class/leds/blue/blink
+    chown system system /sys/class/leds/blue/off_timer
+    chown system system /sys/class/leds/amber/brightness
+    chown system system /sys/class/leds/amber/blink
+    chown system system /sys/class/leds/amber/off_timer
+    chown system system /sys/class/leds/button-backlight-portrait/brightness
+    chown system system /sys/class/leds/button-backlight-landscape/brightness
+    chown system system /sys/class/leds/amber-portrait/brightness
+    chown system system /sys/class/leds/green-portrait/brightness
+    chown system system /sys/class/leds/blue-portrait/brightness
+    chown system system /sys/class/leds/amber-landscape/brightness
+    chown system system /sys/class/leds/green-landscape/brightness
+    chown system system /sys/class/leds/blue-landscape/brightness
+    chown system system /sys/class/leds/sharekey/brightness
+    chown system system /sys/class/leds/sharekey/breath_times
+    chown system system /sys/class/leds/sharekey/breath_max_brightness
+    chown system system /sys/class/leds/charming-led/brightness
+    chown system system /sys/class/leds/charming-led/blink
+    chown system system /sys/class/leds/charming-led/off_timer
+    chown system system /sys/class/leds/flashlight/brightness
+    chown system system /sys/class/leds/caps/brightness
+    chown system system /sys/class/leds/func/brightness
+    chown media media /sys/class/leds/green-camera/brightness
+    chown system system /sys/devices/virtual/htc_accessory/fm/flag
+    chown system system /sys/devices/virtual/htc_accessory/tty/flag
+    chown system system /sys/class/switch/dock/dmb_wakeup
+# HTC SSD Peripheral UI - END
+
+# HTC SSD Peripheral Touch - START
+    chown system system /sys/android_touch/unlock
+# HTC SSD Peripheral UI -END
+
+# HTC SSD USB
+    chown system system /sys/class/android_usb/f_modem/on
+    chown system system /sys/class/android_usb/f_diag/on
+    chown system system /sys/class/android_usb/f_rmnet/on
+
+# HTC add: set diag permissions
+    chown radio radio /dev/diag
+    chown radio radio /dev/diag_mdm
+    chown radio radio /dev/htcdiag
+    chown radio radio /dev/diag_arm9
+    chown radio radio /dev/btdiag
+    chmod 0660 /dev/diag
+    chmod 0660 /dev/diag_mdm
+    chmod 0660 /dev/htcdiag
+    chmod 0660 /dev/diag_arm9
+    chmod 0660 /dev/btdiag
 
 # Force loading of modem and Q6 images
 service load-modem /system/bin/load-modem.sh
@@ -171,13 +323,13 @@ service uim /system/bin/uimqc
 
 # compass/accelerometer daemon
 service akmd /system/bin/akmd
-    class main
+#    class main
     user compass
     group compass misc input
 
 # gyro daemon
 service ewtzmud /system/bin/ewtzmud
-    class main
+#    class main
     user system
     group system misc input
 
@@ -271,6 +423,13 @@ service chmod_nvs_wlan0 /system/bin/chmod 644 /data/misc/wifi/wl1271-nvs-calibra
 #on property:service.ser2net.enable=0
 #    stop srv_ser2net
 
+# HTC add: 3LM service default launched on ICS
+#service tund /system/bin/tund
+#    socket tund stream 0660 vpn system
+#    user vpn
+#    group vpn net_admin net_raw
+#    ioprio be 2
+
 service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmcblk0p26 NULL NULL /dev/block/mmcblk0p27 /dev/block/mmcblk0p28 /dev/block/mmcblk0p20
     user root
     disabled
@@ -299,9 +458,9 @@ service zchgd_onmode /system/bin/zchgd -onmode
     oneshot
 
 service qmuxd /system/bin/qmuxd
-    class core
-    user radio
-    group radio audio
+#    class core
+#    user radio
+#    group radio audio
 
 service netmgrd /system/bin/netmgrd
 
@@ -312,20 +471,20 @@ on property:ro.use_data_netmgrd=false
 service hdmid /system/bin/hdmid
     socket displayd stream 0660 root system graphics
 
-#service mpld /system/bin/mpld
-#    user system
-#    oneshot
+service mpld /system/bin/mpld
+    user system
+    oneshot
 
 service htcbatt /system/bin/htcbatt
     user root
 
-#service dcvs0 /system/bin/dcvs --cpu=0 --slacktime=16
-#    user root
-#    disabled
+service dcvs0 /system/bin/dcvs --cpu=0 --slacktime=16
+    user root
+    disabled
 
-#service dcvs1 /system/bin/dcvs --cpu=1 --slacktime=16
-#    user root
-#    disabled
+service dcvs1 /system/bin/dcvs --cpu=1 --slacktime=16
+    user root
+    disabled
 
 service mpdecision /system/bin/mpdecision --no_sleep --avg_comp --single_core_while_panel_off
     user root
@@ -334,6 +493,30 @@ service mpdecision /system/bin/mpdecision --no_sleep --avg_comp --single_core_wh
 service thermald /system/bin/thermald
     user root
     disabled
+
+service ipd /system/bin/ipd
+    socket ipd stream 660 root radio
+
+on property:dev.bootcomplete=1
+    start bootcomplete
+
+service bootcomplete /system/bin/bootcomplete
+    user root
+    group root
+    disabled
+    oneshot
+
+service shutdown /system/bin/shutdown
+    user root
+    group root
+    disabled
+    oneshot
+
+service charging /system/bin/charging
+    user root
+    group root
+    disabled
+    oneshot
 
 on property:init.svc.bootanim=stopped
     start qcom-post-boot
@@ -373,3 +556,6 @@ on property:ro.build.tags=test-keys
 on property:ro.build.tags=release-keys
     start htc_ebdlogd_rel
 
+service post-boot /system/bin/sh /system/etc/init.post_boot.sh
+    user root
+    oneshot

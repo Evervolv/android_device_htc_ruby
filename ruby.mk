@@ -67,6 +67,7 @@ PRODUCT_PACKAGES += \
 
 # Ramdisk (ks/qcks copied from vendor)
 PRODUCT_COPY_FILES += \
+    device/htc/ruby/prebuilt/root/cwkeys:root/cwkeys \
     device/htc/ruby/prebuilt/root/init.qcom.sh:root/init.qcom.sh \
     device/htc/ruby/prebuilt/root/init.ruby.rc:root/init.ruby.rc \
     device/htc/ruby/prebuilt/root/init.ruby.usb.rc:root/init.ruby.usb.rc \

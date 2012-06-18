@@ -1,63 +1,35 @@
-# misc partition
-/dev/block/mmcblk0p16   0460    radio   diag
-
-# for simlock
-/dev/simlock            0660    radio   radio
-
-# NFC
-/dev/pn544              0600    nfc     nfc
-
-/dev/oncrpc/*           0660    root    qcom_oncrpc
-
-# pana gyro
-/dev/ewtzmu2hal         0664    system  system
-/dev/ewtzmu2daemon      0664    system  system
-/dev/ewtzmu2            0664    system  system
-
-# G-Sensor and Compass
-/dev/akm8975_aot        0640    compass system
-/dev/akm8975_daemon     0640    compass system
-/dev/bma150             0640    compass system
-
-# camera
-/dev/gemini*            0660    system  camera
-
-# bluetooth
-/dev/ttyMSM0              0600   bluetooth  bluetooth
-/dev/ttyHS0               0600   bluetooth  bluetooth
-/dev/ttyGS0               0660   system     system
-/dev/uinput               0660   system     bluetooth
-
+/dev/rtc0                 0600   system     system
 # the genlock client device node is world writable/readable.
 /dev/genlock              0666   root      root
-
 # gpu driver for adreno200 is globally accessible
 /dev/kgsl                 0666   root       root
 /dev/kgsl-3d0             0666   root       root
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
-
 # these should not be world writable
-/dev/pmem                 0660   system     graphics
-/dev/pmem_audio           0660   system     audio
-/dev/pmem_adsp*           0660   system     audio
-/dev/pmem_smipool*        0660   system     camera
-/dev/pmem_camera*         0660   system     camera
+/dev/ttyHS0               0600   bluetooth  bluetooth
+/dev/ttyGS0               0660   system     system
+/dev/sdio_tty_ciq_00      0660   system     system
 /dev/msm_rotator          0660   system     graphics
-
-# radio_feedback
-/dev/radio_feedback       0660    radio   radio
-/dev/sdiotty0             0660    radio   radio
-/dev/rmnet_ctrl           0640    radio   radio
-
-/dev/smd9                 0600   system     system
-/dev/smd21                0640   radio      radio
-/dev/smd22                0640   radio      radio
-/dev/smd27                0640   radio      radio
-/dev/smd36                0640   radio      radio
+/dev/pmem_audio           0660   system     audio
+/dev/pmem_smipool*        0660   system     camera
+/dev/pmem_venc            0660   system     audio
+/dev/msm_vidc_dec         0660   system     audio
+/dev/msm_vidc_enc         0660   system     audio
+/dev/msm_vidc_reg         0660   system     audio
+/dev/gemini*	          0660   system     audio
+/dev/oncrpc/*             0660   root       qcom_oncrpc
+/dev/radio0               0644   fm_radio   fm_radio
+/dev/i2c-0                0664   root       system
+/dev/i2c-1                0664   root       system
+/dev/i2c-2                0664   root       system
+/dev/i2c-4                0664   root       system
+/dev/msm_mvs              0660   system     audio
+/dev/msm_voicememo        0660   system     audio
+/dev/msm_pcm_lp_dec       0660   system     audio
 /dev/smd4                 0660   system     system
-/dev/smd3                 0660   bluetooth  bluetooth
-/dev/smd2                 0660   bluetooth  bluetooth
+/dev/smd3                 0660   bluetooth      bluetooth
+/dev/smd2                 0660   bluetooth      bluetooth
 /dev/smd0                 0640   radio      radio
 /dev/smd7                 0640   radio      radio
 /dev/smdcntl0             0640   radio      radio
@@ -73,45 +45,22 @@
 /dev/sdioctl2             0640   radio      radio
 /dev/sdioctl3             0640   radio      radio
 /dev/sdioctl4             0640   radio      radio
-/dev/sdioctl4             0640   radio      radio
 /dev/sdioctl5             0640   radio      radio
 /dev/sdioctl6             0640   radio      radio
 /dev/sdioctl7             0640   radio      radio
 /dev/sdioctl8             0640   radio      radio
 /dev/rmnet_mux_ctrl       0640   radio      radio
-/dev/hsicctl0             0640   radio      radio
-/dev/hsicctl1             0640   radio      radio
-/dev/hsicctl2             0640   radio      radio
-/dev/hsicctl3             0640   radio      radio
 /dev/qemu_trace           0666   system     system
-/dev/qmi                  0640   radio      radio
-/dev/qmi0                 0640   radio      radio
-/dev/qmi1                 0640   radio      radio
-/dev/qmi2                 0640   radio      radio
-
+/dev/mdm                  0660   system     system
+/dev/ttyHSL1              0660   system     system
+/dev/tty_sdio_00          0660   system     system
+/dev/video*	              0660   system     camera
+# regular apps need to be able to open ion
+/dev/ion                  0664   system     system
 # permissions for video
 /dev/msm_vidc_reg         0660  system       audio
 /dev/msm_vidc_dec         0660  system       audio
-/dev/msm_vidc_dec_sec     0660  system       audio
 /dev/msm_vidc_enc         0660  system       audio
-
-# for audio
-/dev/audience_a1026       0660   system     audio
-/dev/msm_mvs              0660   system     audio
-/dev/codec_aic3254        0660   system     audio
-/dev/msm_audio_dev_ctrl   0660   system     audio
-/dev/control0             0660   system     audio
-/dev/msm_mp3              0660   system     audio
-/dev/msm_mp3_lp           0660   system     audio
-/dev/msm_pcm_in           0660   system     audio
-/dev/msm_pcm_lp_dec       0660   system     audio
-/dev/msm_pcm_out          0660   system     audio
-/dev/htc-acdb             0660   system     audio
-/dev/htc-acoustic         0660   system     audio
-/dev/controlC0            0660   system     audio
-/dev/adsp                 0660   system     audio
-/dev/tpa2051d3	          0660   system     audio
-
 # permissions for audio
 /dev/msm_amrnb            0660  system       audio
 /dev/msm_amrwb            0660  system       audio
@@ -130,22 +79,28 @@
 /dev/msm_preproc_ctl      0660  system       audio
 /dev/msm_a2dp_in          0640  system       audio
 /dev/msm_amrnb_in         0640  system       audio
-
-# diag permissions
-/dev/diag               0660    radio   radio
-/dev/diag_mdm           0660    radio   radio
-/dev/htcdiag            0660    radio   radio
-/dev/diag_arm9          0660    radio   radio
-/dev/btdiag             0660    radio   radio
-
-# Invense MPU3050
-/dev/mpu                0664    system  system
-/dev/mpuirq             0664    system  system
-/dev/timerirq           0664    system  system
-
-# modem link
-/dev/ttyHSUSB0          0600    system  system
-/dev/ttySA0             0600    system  system
-
-# ntrig touch permissions
-/dev/ntrig_touch        0640    system  system
+# permissions for sensors
+/dev/msm_dsps             0660  system       system
+# for audio
+/dev/msm_acdb	          0660   system     audio
+/dev/audience_a1026       0660   system     audio
+/dev/msm_mvs              0660   system     audio
+/dev/codec_aic3254        0660   system     audio
+/dev/msm_audio_dev_ctrl   0660   system     audio
+/dev/control0             0660   system     audio
+/dev/msm_mp3              0660   system     audio
+/dev/msm_mp3_lp           0660   system     audio
+/dev/msm_pcm_in           0660   system     audio
+/dev/msm_pcm_lp_dec       0660   system     audio
+/dev/msm_pcm_out          0660   system     audio
+/dev/htc-acdb             0660   system     audio
+/dev/htc-acoustic         0660   system     audio
+/dev/controlC0            0660   system     audio
+/dev/adsp                 0660   system     audio
+/dev/pmem_audio	          0660   system     audio
+/dev/tpa2051d3	          0660   system     audio
+# for modem link
+/sys/module/serial/parameters/modem_enabled    0600    system  system
+/dev/ttyHSUSB0                                 0600    system  system
+/dev/ttySA0                                    0600    system  system
+/dev/smd9                                      0600    system  system
