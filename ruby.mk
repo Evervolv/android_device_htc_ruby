@@ -18,29 +18,9 @@ DEVICE_PACKAGE_OVERLAYS += device/htc/ruby/overlay
 PRODUCT_LOCALES += en
 
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.telephony.ril.v3=signalstrength,singlepdp \
-    ro.media.dec.jpeg.memcap=20000000 \
-    dalvik.vm.lockprof.threshold=500 \
-    dalvik.vm.dexopt-flags=m=y \
-    ro.sf.lcd_density=240
 
 # Dalvik
 include frameworks/base/build/phone-xhdpi-1024-dalvik-heap.mk
-
-PRODUCT_PROPERTY_OVERRIDES += \
-    debug.fb.rgb565=0 \
-    debug.sf.hw=1 \
-    debug.composition.type=dyn \
-    hwui.disable_vsync=false \
-    hwui.print_config=choice \
-#    ro.sf.compbypass.enable=1
-#    debug.enabletr=true
-
-PRODUCT_PROPERTY_OVERRIDES += \
-    debug.qctwa.preservebuf=1 \
-    com.qc.hardware=true
-#    com.qc.hdmi_out=false
 
 # USB
 ADDITIONAL_DEFAULT_PROPERTIES += \
