@@ -37,8 +37,13 @@ PRODUCT_PACKAGES += \
     libnfc_jni \
     Nfc \
     Tag \
-    com.android.nfc_extras \
-    nfc.ruby
+    com.android.nfc_extras
+
+# Hostapd
+PRODUCT_PACKAGES += \
+    hostapd_cli \
+    calibrator \
+    hostapd
 
 #PRODUCT_PACKAGES += \
 #    libmlplatform \
