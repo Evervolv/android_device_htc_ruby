@@ -40,8 +40,8 @@ TARGET_NO_RADIOIMAGE := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 
 # Gps
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
-BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
+#BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
+#BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 
 # Enable NFC
 BOARD_HAVE_NFC := true
@@ -57,16 +57,19 @@ BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
 BOARD_KERNEL_BASE := 0x48000000
 BOARD_PAGE_SIZE := 2048
 
-# TI Wifi
-BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-WPA_SUPPLICANT_VERSION      := VER_0_8_X
-BOARD_WLAN_DEVICE           := wl12xx_mac80211
+# Connectivity - Wi-Fi
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
-BOARD_HOSTAPD_DRIVER        := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_wl12xx
-BOARD_SOFTAP_DEVICE_TI      := NL80211
-WIFI_DRIVER_MODULE_NAME     := "wl12xx_sdio"
-WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/wl12xx_sdio.ko"
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_wl12xx
+BOARD_WLAN_DEVICE                := wl12xx_mac80211
+BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
+WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+WIFI_FIRMWARE_LOADER             := ""
+#COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
+#BOARD_SOFTAP_DEVICE_TI           := NL80211
 
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
