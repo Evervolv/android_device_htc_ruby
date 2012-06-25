@@ -41,6 +41,8 @@ PRODUCT_PACKAGES += \
 
 # Hostapd
 PRODUCT_PACKAGES += \
+    hostapd.conf \
+    dhcpcd.conf \
     hostapd_cli \
     calibrator \
     hostapd
@@ -60,7 +62,6 @@ PRODUCT_COPY_FILES += \
 
 # Boot scripts
 PRODUCT_COPY_FILES += \
-    device/htc/ruby/prebuilt/etc/init.goldfish.sh:system/etc/init.goldfish.sh \
     device/htc/ruby/prebuilt/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
     device/htc/ruby/prebuilt/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
     device/htc/ruby/prebuilt/etc/init.qcom.fm.sh:system/etc/init.qcom.fm.sh \
@@ -102,7 +103,6 @@ PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/base/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/base/location/lib/com.android.location.provider.xml:system/etc/permissions/com.android.location.provider.xml \
     frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
 
 # recovery charge mode support
