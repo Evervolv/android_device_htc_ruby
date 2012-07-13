@@ -20,7 +20,7 @@ PRODUCT_LOCALES += en
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 
 # Dalvik
-include frameworks/base/build/phone-xhdpi-1024-dalvik-heap.mk
+include frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk
 
 # USB
 ADDITIONAL_DEFAULT_PROPERTIES += \
@@ -100,10 +100,10 @@ endif
 
 # Default permissions
 PRODUCT_COPY_FILES += \
-    frameworks/base/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
-    frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/base/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
+    frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
+    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
 
 # recovery charge mode support
 include device/htc/ruby/recovery/recovery.mk
@@ -116,9 +116,6 @@ $(call inherit-product, device/htc/ruby/media_htcaudio.mk)
 
 # common msm8660 stuff
 $(call inherit-product, device/htc/msm8660-common/msm8660.mk)
-
-# stuff common to all HTC phones
-$(call inherit-product, device/htc/common/common.mk)
 
 ## (2) Also get non-open-source GSM-specific aspects if available
 $(call inherit-product-if-exists, vendor/htc/ruby/ruby-vendor.mk)
