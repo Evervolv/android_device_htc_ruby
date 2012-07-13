@@ -49,6 +49,9 @@ BOARD_HAVE_NFC := true
 BOARD_HAS_SCREEN_OFF_FLICKER := true
 #BOARD_USE_SKIA_LCDTEXT := true
 
+# Hardware Rendering
+TARGET_USES_PMEM := true
+
 #BOARD_USE_NEW_LIBRIL_HTC    := true
 #BOARD_PROVIDES_LIBRIL       := vendor/htc/ruby/proprietary/libril.so
 BOARD_PROVIDES_LIBRIL := true
