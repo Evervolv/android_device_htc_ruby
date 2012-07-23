@@ -111,10 +111,10 @@
     <integer name="config_defaultNotificationLedOff">2000</integer>
 
     <!-- Package name providing network location support. -->
-    <string name="config_networkLocationProviderPackageName" translatable="false">com.google.android.location.NetworkLocationProvider</string>
+    <string name="config_networkLocationProviderPackageName" translatable="false">com.google.android.location</string>
 
     <!-- Package name providing geocoder API support. -->
-    <string name="config_geocodeProviderPackageName" translatable="false">com.google.android.location.GeocodeProvider</string>
+    <string name="config_geocodeProviderPackageName" translatable="false">com.google.android.location</string>
 
     <!-- This string array should be overridden by the device to present a list of
          network attributes.  This is used by the connectivity manager to decide
