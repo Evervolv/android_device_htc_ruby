@@ -6,14 +6,19 @@ on early-init
 
 on init
 
+    # sdcard mounts
+    mkdir /storage 0050 system sdcard_r
     # external sdcard
-    export EXTERNAL_STORAGE /mnt/sdcard
-    mkdir /mnt/sdcard 0000 system system
-    symlink /mnt/sdcard /sdcard
+    export EXTERNAL_STORAGE /storage/sdcard0
+    mkdir /storage/sdcard0 0000 system system
+    symlink /storage/sdcard0 /sdcard
+    symlink /storage/sdcard0 /mnt/sdcard
     # internal sd on emmc
-    export SECONDARY_STORAGE /mnt/emmc
-    mkdir /mnt/emmc 0000 system system
-    symlink /mnt/emmc /emmc
+    export SECONDARY_STORAGE /storage/sdcard1
+    mkdir /storage/sdcard1 0000 system system
+    symlink /storage/sdcard1 /mnt/emmc
+    symlink /storage/sdcard1 /emmc
+    symlink /storage/sdcard1 /sdcard2
 
     # create our mount directories
     mkdir /system
