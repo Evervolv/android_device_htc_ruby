@@ -328,13 +328,13 @@ service uim /system/bin/uimqc
 
 # compass/accelerometer daemon
 service akmd /system/bin/akmd
-#    class main
+    class main
     user compass
     group compass misc input
 
 # gyro daemon
 service ewtzmud /system/bin/ewtzmud
-#    class main
+    class main
     user system
     group system misc input
 
@@ -344,34 +344,53 @@ service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
     oneshot
     keycodes 114 115
 
+# bluetooth
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_bnep0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
 # wifi ++
-service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0
+service wpa_supplicant /system/bin/wpa_supplicant \
+    -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    class main
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+service dhcpcd_wlan0 /system/bin/dhcpcd -aABKL
+    class main
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
     disabled
     oneshot
 
 service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+    class main
     disabled
     oneshot
 
 service iprenew_p2p /system/bin/dhcpcd -n
+    class main
     disabled
     oneshot
 
-service hostapd_bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
+service hostapd_bin /system/bin/logwrapper /system/bin/hostapd -dd /data/misc/wifi/hostapd.conf
+    class main
     socket wpa_wlan1 dgram 660 wifi wifi
     disabled
     oneshot
 
-service p2p_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc/wifi/p2p_supplicant.conf -dt
+service p2p_supplicant /system/bin/wpa_supplicant \
+    -Dnl80211 -iwlan0 -c/data/misc/wifi/p2p_supplicant.conf -dt
     socket wpa_p2p_wlan0:0 dgram 660 wifi wifi
     disabled
     oneshot
@@ -388,14 +407,14 @@ on property:init.svc.hostapd_bin=running
     start initial_regdom
 
 service upd_nvs_wlan0 /system/bin/calibrator set upd_nvs /system/etc/wifi/TQS_D_1.7.ini /proc/calibration /data/misc/wifi/wl1271-nvs-calibrated.bin
-        disabled
+#        disabled
         class core
         user root
         group root
         oneshot
 
 service chmod_nvs_wlan0 /system/bin/chmod 644 /data/misc/wifi/wl1271-nvs-calibrated.bin
-        disabled
+#        disabled
         class core
         user root
         group root
@@ -436,6 +455,7 @@ service chmod_nvs_wlan0 /system/bin/chmod 644 /data/misc/wifi/wl1271-nvs-calibra
 #    ioprio be 2
 
 service rmt_storage /system/bin/rmt_storage /dev/block/mmcblk0p25 /dev/block/mmcblk0p26 NULL NULL /dev/block/mmcblk0p27 /dev/block/mmcblk0p28 /dev/block/mmcblk0p20
+    class core
     user root
     disabled
 
@@ -462,12 +482,22 @@ service zchgd_onmode /system/bin/zchgd -onmode
     user root
     oneshot
 
+service qmiproxy /system/bin/qmiproxy
+    class main
+    user radio
+    group radio qcom_diag
+    disabled
+
+# QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd
-#    class core
-#    user radio
-#    group radio audio
+    class main
+    user radio
+    group radio audio bluetooth gps qcom_diag
+    disabled
 
 service netmgrd /system/bin/netmgrd
+    class main
+    disabled
 
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
@@ -518,12 +548,13 @@ service shutdown /system/bin/shutdown
     oneshot
 
 service charging /system/bin/charging
+    class charging
     user root
     group root
     disabled
     oneshot
 
-on property:init.svc.bootanim=stopped
+on property:sys.boot_completed=1
     start qcom-post-boot
     # Overwrite ActivityManager's low memory killer settings
     write /sys/module/lowmemorykiller/parameters/adj 0,2,4,7,9,12
@@ -535,10 +566,59 @@ on property:init.svc.bootanim=stopped
     start mpdecision
     start thermald
 
+service qcom-sh /system/bin/sh /init.qcom.sh
+    class late_start
+    user root
+    oneshot
+
 service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
+    class late_start
     user root
     disabled
     oneshot
+
+service post-boot /system/bin/sh /system/etc/init.post_boot.sh
+    user root
+    oneshot
+
+service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
+    class late_start
+    user root
+    group system qcom_oncrpc
+    disabled
+    oneshot
+
+service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+    class late_start
+    user bluetooth
+    group qcom_oncrpc bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
+    class late_start
+    user bluetooth
+    group bluetooth net_bt_admin inet net_admin net_raw
+    disabled
+    oneshot
+
+#service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
+#    class late_start
+#    oneshot
+
+service wifi-sdio-on /system/bin/sh /system/etc/init.qcom.sdio.sh
+    class late_start
+    group wifi inet
+    disabled
+    oneshot
+
+service ril-daemon1 /system/bin/rild -c 1
+    class main
+    socket rild1 stream 660 root radio
+    socket rild-debug1 stream 660 radio system
+    user root
+    disabled
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
 
 service htc_ebdlogd /system/bin/htc_ebdlogd -s -k -P 7
     user root
@@ -560,7 +640,3 @@ on property:ro.build.tags=test-keys
 
 on property:ro.build.tags=release-keys
     start htc_ebdlogd_rel
-
-service post-boot /system/bin/sh /system/etc/init.post_boot.sh
-    user root
-    oneshot
