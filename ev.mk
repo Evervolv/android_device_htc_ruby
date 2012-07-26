@@ -29,4 +29,4 @@ PRODUCT_COPY_FILES +=  \
     vendor/ev/prebuilt/qhd/media/bootanimation.zip:system/media/bootanimation.zip
 
 # Hot reboot
-#PRODUCT_PACKAGE_OVERLAYS += vendor/ev/overlay/hot_reboot
+PRODUCT_PACKAGE_OVERLAYS += vendor/ev/overlay/hot_reboot
