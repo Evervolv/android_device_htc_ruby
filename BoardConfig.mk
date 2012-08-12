@@ -77,9 +77,6 @@ COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
 # Define Prebuilt kernel locations
 TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
 
-# For recovery-chargemode
-TARGET_RECOVERY_INITRC := device/htc/ruby/recovery/root/init.rc
-
 BOARD_USES_MMCUTILS := true
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_VOLD_MAX_PARTITIONS := 37

@@ -105,9 +105,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
 
-# recovery charge mode support
-include device/htc/ruby/recovery/recovery.mk
-
 # media profiles and capabilities spec
 $(call inherit-product, device/htc/ruby/media_a1026.mk)
 
