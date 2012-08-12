@@ -4,20 +4,21 @@
 
 ro.sf.lcd_density=240
 
-debug.fb.rgb565=0
-debug.sf.hw=1
-debug.composition.type=c2d
-#debug.enabletr=true
-debug.qctwa.preservebuf=1
-#ro.sf.compbypass.enable=1
 com.qc.hardware=1
+debug.sf.hw=1
+# todo this should not be needed
+debug.composition.type=c2d
+# uber breakage here
+#debug.mdpcomp.maxlayer=3
+debug.mdpcomp.logs=0
 #com.qc.hdmi_out=false
-#ro.telephony.ril.v3=signalstrength,skipbrokendatacall
 dalvik.vm.dexopt-flags=m=y
 #lpa.decode=true
 #lpa.use-stagefright=true
 ro.telephony.ril_class=HTCQualcommRIL
-
+ro.telephony.ril.v3=qcomuiccstack
+mobiledata.interfaces=rmnet0
+ro.baseband.arch=msm
 ro.com.google.gmsversion=4.0_r2
 
 ro.ril.oem.ecclist=911
