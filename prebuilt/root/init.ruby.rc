@@ -407,14 +407,14 @@ on property:init.svc.hostapd_bin=running
     start initial_regdom
 
 service upd_nvs_wlan0 /system/bin/calibrator set upd_nvs /system/etc/wifi/TQS_D_1.7.ini /proc/calibration /data/misc/wifi/wl1271-nvs-calibrated.bin
-#        disabled
+        disabled
         class core
         user root
         group root
         oneshot
 
 service chmod_nvs_wlan0 /system/bin/chmod 644 /data/misc/wifi/wl1271-nvs-calibrated.bin
-#        disabled
+        disabled
         class core
         user root
         group root
@@ -511,6 +511,7 @@ service mpld /system/bin/mpld
     oneshot
 
 service htcbatt /system/bin/htcbatt
+    class core
     user root
 
 service dcvs0 /system/bin/dcvs --cpu=0 --slacktime=16
@@ -548,7 +549,6 @@ service shutdown /system/bin/shutdown
     oneshot
 
 service charging /system/bin/charging
-    class charging
     user root
     group root
     disabled
