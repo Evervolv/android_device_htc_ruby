@@ -104,3 +104,5 @@
 /dev/ttyHSUSB0                                 0600    system  system
 /dev/ttySA0                                    0600    system  system
 /dev/smd9                                      0600    system  system
+# wifi
+/dev/rfkill             0660    root    wifi

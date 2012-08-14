@@ -43,8 +43,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     hostapd.conf \
     dhcpcd.conf \
-    hostapd_cli \
+    TQS_D_1.7.ini \
+    wpa_supplicant.conf \
     calibrator \
+    hostapd_cli \
     hostapd
 
 #PRODUCT_PACKAGES += \
@@ -102,8 +104,9 @@ endif
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml
+
+#    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
 
 # media profiles and capabilities spec
 $(call inherit-product, device/htc/ruby/media_a1026.mk)
