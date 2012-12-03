@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2009 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,55 +11,50 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+#
+# This file sets variables that control the way modules are built
+# thorughout the system. It should not be used to conditionally
+# disable makefiles (the proper mechanism to control what gets
+# included in a build is to use PRODUCT_PACKAGES in a product
+# definition file).
 #
 
-# inherit from the proprietary version
--include vendor/htc/ruby/BoardConfigVendor.mk
-# inherit common msm8660 defines
-include device/htc/msm8660-common/BoardConfigCommon.mk
+# WARNING: This line must come *before* including the proprietary
+# variant, so that it gets overwritten by the parent (which goes
+# against the traditional rules of inheritance).
 
-# override common stuff that wont build just yet
-TARGET_QCOM_HDMI_OUT := false
-TARGET_QCOM_HDMI_RESOLUTION_AUTO := false
-COMMON_GLOBAL_CFLAGS += -UWITH_QCOM_LPA
-TARGET_USES_QCOM_LPA := false
-DYNAMIC_SHARED_LIBV8SO := false
-# override dhd defines from msm8660-common
-WIFI_BAND:=
-WIFI_DRIVER_FW_PATH_AP:=
-WIFI_DRIVER_FW_PATH_P2P:=
-WIFI_DRIVER_FW_PATH_STA:=
-WIFI_DRIVER_FW_PATH_PARAM:=
-# end overrides
+# inherit from msm8660-common
+-include device/htc/msm8660-common/BoardConfigCommon.mk
 
-USE_CAMERA_STUB := true
-
+# Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := ruby
-TARGET_NO_RADIOIMAGE := true
-BOARD_HAS_NO_SELECT_BUTTON := true
 
-# Gps
-#BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
-#BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
-
-# Enable NFC
-BOARD_HAVE_NFC := true
-
-BOARD_HAS_SCREEN_OFF_FLICKER := true
-#BOARD_USE_SKIA_LCDTEXT := true
-
-# Hardware Rendering
-TARGET_USES_PMEM := true
-
-#BOARD_USE_NEW_LIBRIL_HTC    := true
-#BOARD_PROVIDES_LIBRIL       := vendor/htc/ruby/proprietary/libril.so
-BOARD_PROVIDES_LIBRIL := true
-
-BOARD_KERNEL_CMDLINE := no_console_suspend=1 androidboot.hardware=ruby
+# Kernel
 BOARD_KERNEL_BASE := 0x48000000
-BOARD_KERNEL_PAGESIZE := 2048
+BOARD_KERNEL_CMDLINE := console=ttyHSL3 androidboot.hardware=ruby no_console_suspend=1
+BOARD_KERNEL_PAGE_SIZE := 2048
+TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
+TARGET_KERNEL_SOURCE := kernel/htc/msm8660
+TARGET_KERNEL_CONFIG := ruby_defconfig
+BUILD_KERNEL := true
 
-# Connectivity - Wi-Fi
+WLAN_MODULES:
+	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
+	make -j8 -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/compat/compat.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_spi.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
+
+#TARGET_KERNEL_MODULES += WLAN_MODULES
+
+# Wifi
+COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
+
+USES_TI_MAC80211                 := true
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
@@ -71,22 +65,24 @@ BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
 WIFI_FIRMWARE_LOADER             := ""
-COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-#BOARD_SOFTAP_DEVICE_TI           := NL80211
 
-# Define Prebuilt kernel locations
-TARGET_PREBUILT_KERNEL := device/htc/ruby/prebuilt/root/kernel
+# QCOM GPS
+BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := ruby
 
-BOARD_USES_MMCUTILS := true
-BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
-BOARD_VOLD_MAX_PARTITIONS := 37
+# NFC
+BOARD_HAVE_NFC := true
+
+# Use libril in the device tree
+BOARD_PROVIDES_LIBRIL := true
+
+# Filesystem
 TARGET_USERIMAGES_USE_EXT4 := true
-BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
-# BOOT     16M        16777216   0x01000000
-# RECOVERY 15.999M    16776192   0x00fffc00
-# SYSTEM   1.499999G  1610611712 0x5ffffc00
-# USERDATA 2.4999995G 2684354048 0x9ffffe00
-BOARD_BOOTIMAGE_PARTITION_SIZE     := 16777216
+BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16776192
-BOARD_SYSTEMIMAGE_PARTITION_SIZE   := 1610611712
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1610611712
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2684354048
+BOARD_FLASH_BLOCK_SIZE := 131072
+
+# Recovery
+BOARD_USES_MMCUTILS := true
+BOARD_HAS_NO_SELECT_BUTTON := true
