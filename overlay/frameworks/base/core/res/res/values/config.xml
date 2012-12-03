@@ -102,7 +102,7 @@
     </integer-array>
 
     <!-- Needed for capacitive buttons to work without toggling auto-brightness -->
-    <bool name="config_autoBrightnessButtonKeyboard">false</bool>
+    <!-- <bool name="config_autoBrightnessButtonKeyboard">false</bool> -->
 
     <!-- Default color for notification LED is green -->
     <color name="config_defaultNotificationColor">#ff00ff00</color>
@@ -180,7 +180,7 @@
 
     <!-- Is the battery LED intrusive?
          Used to decide if there should be a disable option -->
-    <bool name="config_intrusiveBatteryLed">true</bool>
+    <!-- <bool name="config_intrusiveBatteryLed">true</bool> -->
 
     <!-- Indicate whether the SD card is accessible without removing the battery. -->
     <bool name="config_batterySdCardAccessibility">true</bool>

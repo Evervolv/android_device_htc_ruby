@@ -65,7 +65,7 @@ on early-init
 on init
     mkdir /devlog 0700 root root
 
-on emmc-fs
+on fs
     # mount all mmc partitions
     mount_all /fstab.ruby
 
