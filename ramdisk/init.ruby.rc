@@ -71,6 +71,10 @@ on fs
 
     setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
 
+    # HACK: We need to re-do the firmware
+    # mounting / symlinking this will do for now.
+    symlink /system/vendor/lib /vendor/lib
+
     mkdir /vendor/etc 0771 system system
     symlink /system/vendor/etc/audio_effects.conf /vendor/etc/audio_effects.conf
 
