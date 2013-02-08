@@ -116,6 +116,7 @@ on boot
     chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
     chown wifi wifi /data/misc/wifi/p2p_supplicant.conf
     chown wifi wifi /data/misc/wifi/p2p_supplicant_manual.conf
+    insmod /system/lib/modules/tty_hci.ko
     insmod /system/lib/modules/compat.ko
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
