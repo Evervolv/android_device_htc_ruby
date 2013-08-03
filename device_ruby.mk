@@ -77,10 +77,6 @@ PRODUCT_COPY_FILES += \
     device/htc/ruby/recovery/root/sbin/detect_key:recovery/root/sbin/detect_key \
     device/htc/ruby/recovery/root/sbin/htcbatt:recovery/root/sbin/htcbatt
 
-# Vold
-PRODUCT_COPY_FILES += \
-    device/htc/ruby/vold.fstab:system/etc/vold.fstab
-
 # Keylayouts and Keychars
 PRODUCT_COPY_FILES += \
     device/htc/ruby/keychars/ruby-keypad.kcm:system/usr/keychars/ruby-keypad.kcm \
