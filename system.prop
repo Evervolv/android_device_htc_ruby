@@ -8,11 +8,24 @@ ro.sf.lcd_density=240
 mobiledata.interfaces=rmnet_sdio0
 rild.libpath=/system/lib/libril-qc-qmi-1.so
 rild.libargs=-d /dev/smd0
+ro.telephony.default_network=0
 ro.telephony.ril_class=HTCQualcommRIL
+ro.telephony.ril.v3=datacallapn,signalstrength
 ro.vendor.extension_library=/system/lib/libqc-opt.so
 
 # wifi
 wifi.interface=wlan0
 
 # UMS
-persist.sys.usb.config=mass_storage,adb
+persist.sys.usb.config=mtp,adb
+
+# telephony tuning
+ro.ril.enable.dtm=1
+ro.ril.enable.amr.wideband=1
+ro.ril.hsxpa=5
+ro.ril.gprsclass=12
+ro.ril.egprsclass=12
+ro.ril.hsdpa.category=24
+ro.ril.hsupa.category=7
+
+
