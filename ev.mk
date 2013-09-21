@@ -1,10 +1,16 @@
+
+# Call apn list configuration
+$(call inherit-product, vendor/ev/config/gsm.mk)
+
+# Call gps Xtra server configuration
+$(call inherit-product, device/common/gps/gps_us.mk)
+
 # Inherit AOSP device configuration for ruby.
 $(call inherit-product, device/htc/ruby/device_ruby.mk)
 
 # Inherit some common evervolv stuff.
 $(call inherit-product, vendor/ev/config/common_full_phone.mk)
 
-#
 # Setup device specific product configuration.
 #
 PRODUCT_NAME    := ev_ruby
