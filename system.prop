@@ -10,7 +10,7 @@ rild.libpath=/system/lib/libril-qc-qmi-1.so
 rild.libargs=-d /dev/smd0
 ro.telephony.default_network=0
 ro.telephony.ril_class=HTCQualcommRIL
-ro.telephony.ril.v3=datacallapn,signalstrengthgsm,skipbrokendatacall
+ro.telephony.ril.v3=skipbrokendatacall
 ro.vendor.extension_library=/system/lib/libqc-opt.so
 
 # wifi
@@ -27,5 +27,5 @@ ro.ril.gprsclass=12
 ro.ril.egprsclass=12
 ro.ril.hsdpa.category=24
 ro.ril.hsupa.category=7
-
+ro.ril.disable.power.collapse=1
 
