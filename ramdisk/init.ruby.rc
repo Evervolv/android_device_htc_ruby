@@ -1,25 +1,24 @@
 import init.ruby.usb.rc
 
-on early-init
-    mkdir /storage 0050 system sdcard_r
-    mkdir /storage/sdcard0 0000 system system
-    mkdir /storage/sdcard1 0000 system system
-    mkdir /storage/usbdisk 0000 system system
+on init
+    mkdir /storage 				0555 			root 	root
+    mkdir /storage/sdcard0 		0000 			system 	system
+    mkdir /storage/sdcard1 		0000 			system	system
+    mkdir /storage/usbdisk 		0000 			system	system
+	export EXTERNAL_STORAGE 	/storage/sdcard0
+	export SECONDARY_STORAGE 	/storage/sdcard1
 
-    # for backwards compatibility
+	# for backwards compatibility
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
-    export EXTERNAL_STORAGE /storage/sdcard0
+
     symlink /storage/sdcard1 /external_sd
     symlink /storage/sdcard1 /mnt/external_sd
-    export SECONDARY_STORAGE /storage/sdcard1
+
     symlink /storage/usbdisk /usbdisk
     symlink /storage/usbdisk /mnt/usbdisk
 
     setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
-
-    # 4.3 requires this
-    chmod 0644 /proc/cmdline
 
     # msm8x60 firmware
     rm /vendor
