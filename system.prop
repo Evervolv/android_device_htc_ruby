@@ -2,6 +2,8 @@
 # system.prop for ruby
 #
 
+persist.fuse_sdcard=true
+
 ro.sf.lcd_density=240
 
 # RIL properties
@@ -17,6 +19,7 @@ wifi.interface=wlan0
 
 # UMS
 persist.sys.usb.config=mtp,adb
+ro.vold.umsdirtyratio=40
 
 # telephony tuning
 ro.ril.enable.dtm=1
@@ -27,3 +30,4 @@ ro.ril.egprsclass=12
 ro.ril.hsdpa.category=24
 ro.ril.hsupa.category=7
 ro.ril.fast.dormancy.rule=1
+
