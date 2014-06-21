@@ -84,3 +84,7 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_RECOVERY_FSTAB := device/htc/ruby/ramdisk/fstab.ruby
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_SELECT_BUTTON := true
+
+# TWRP Recovery Settings
+DEVICE_RESOLUTION = 540x960
+
