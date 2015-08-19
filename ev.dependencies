@@ -3,5 +3,15 @@
     "repository": "android_device_htc_msm8660-common",
     "target_path": "device/htc/msm8660-common",
     "dep_type": "device"
+  },
+  {
+    "repository": "android_hardware_ti_wlan",
+    "target_path": "hardware/ti/wlan",
+    "dep_type": "hardware"
+  },
+  {
+    "repository": "android_hardware_ti_wpan",
+    "target_path": "hardware/ti/wpan",
+    "dep_type": "hardware"
   }
 ]
